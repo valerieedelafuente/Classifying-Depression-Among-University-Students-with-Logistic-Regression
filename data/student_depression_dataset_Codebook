@@ -1,7 +1,7 @@
-File Structure Format: CSV format Rows: 
-Each row represents an individual student. 
-
+File Structure Format: CSV format
+Rows: Each row represents an individual student. 
 Columns: Each column represents a specific feature or attribute. 
+
 Columns ID: Unique identifier for each student. 
 Age: Age of the student.
 Gender: Gender (e.g., Male, Female). 
