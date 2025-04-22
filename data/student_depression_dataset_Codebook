@@ -8,8 +8,10 @@ Gender: Gender (e.g., Male, Female).
 City: Geographic region 
 CGPA: Grade Point Average or other academic scores. 
 Sleep Duration: Average daily sleep duration. 
-Profession: Work Pressure: Academic 
-Pressure: Study Satisfaction: 
+Profession: 
+Work Pressure: 
+Academic Pressure: 
+Study Satisfaction: 
 Job Satisfaction: 
 Dietary Habits:
 Depression_Status: Binary (Yes/No)
