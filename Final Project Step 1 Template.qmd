@@ -57,11 +57,11 @@ The deadline for this step is Friday, April 25.
 
 | Name                 | Responsibilities                                           |
 |-----------------------|-----------------------------------------------------------|
- |Matthew Arteaga || Develop Research Questions
- |Phuc Lu || Form Hypothesis 
- |Valerie De La Fuente || Data Preparation (cleaning)
- |Hayden Galletta || Explatory Data Analysis
- |William Nelson || Coder 
+ |Matthew Arteaga |Develop Research Questions|
+ |Phuc Lu |Form Hypothesis |
+ |Valerie De La Fuente|Data Preparation (cleaning)|
+ |Hayden Galletta |Explatory Data Analysis|
+ |William Nelson |Coder|
 
 # Data Information
 
