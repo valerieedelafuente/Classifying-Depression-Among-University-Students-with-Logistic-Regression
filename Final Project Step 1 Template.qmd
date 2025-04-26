@@ -1,0 +1,82 @@
+---
+title: 'Final Project - Step 1 (8 Points)'
+subtitle: "PSTAT100: Data Science Concepts and Analysis" 
+
+author:
+    affiliations:
+      - name: "Spring 2025"
+affiliation-title: "Quarter"
+format: 
+ pdf: 
+    latex_engine: xelatex
+    geometry: "letterpaper, margin=0.3in"
+    code-fold: true
+    code-line-numbers: true
+    code-copy: true
+    code-tools: true
+    self-contained: true
+    toc: false
+    toc-location: left
+    number-sections: true
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message =  FALSE)
+knitr::opts_chunk$set(warning =  FALSE)
+knitr::opts_chunk$set(error =  FALSE)
+bfcolor <- function(x, color) {
+  if (knitr::is_latex_output()) {
+    sprintf("\\textcolor{%s}{\\textbf{%s}}", color, x)
+  } else if (knitr::is_html_output()) {
+    sprintf("<span style='color: %s;'><b>%s</b></span>", color, x)
+  } else x
+}
+```
+
+:::{.callout-caution}
+# Due Date
+The deadline for this step is Friday, April 25.
+:::
+
+:::callout
+# Formation of groups:
+<div style="text-align: center">
+<span style="color: blue;"> **GROUP NAME **</span> 
+</div>
+- Matthew Arteaga (matthewarteaga)
+- Phuc Lu (pdlu)
+- Valerie De La Fuente (valeriedelafuente)
+- Hayden Galletta (haydengalletta)
+- William Nelson (williamnelson)  
+:::
+
+ 
+
+
+
+# Tentative Role Distribution Table
+
+| Name                 | Responsibilities                                           |
+|-----------------------|-----------------------------------------------------------|
+ |Matthew Arteaga || Develop Research Questions
+ |Phuc Lu || Form Hypothesis 
+ |Valerie De La Fuente || Data Preparation (cleaning)
+ |Hayden Galletta || Explatory Data Analysis
+ |William Nelson || Coder 
+
+# Data Information
+
+  **Data Name/Title**: *Student Depression Dataset*
+  
+  **Author/Owner**: *Israel Campero Jurado*
+  
+  **Date of Publication**: *March 12, 2025*
+  
+  **Publication Venue**: *OpenML*
+  
+  **Retrieval Date**: *April 22, 2025*
+ 
+  **Link**: *https://www.openml.org/search?type=data&status=active&id=46753&sort=runs*
+
+
+# Initial Insights:
+This data set is particularly of interest for our group because it will allow us to analyze how a multitude of aspects of a student’s life play a role in whether or not they consider themselves depressed. In addition, we can analyze whether or not the increase of certain variables results in a higher rate of depression among groups.
