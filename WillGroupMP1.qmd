@@ -1,0 +1,180 @@
+---
+title: 'Mini Project 1'
+subtitle: "PSTAT100: Data Science Concepts and Analysis" 
+
+author: "Instructor: Ali Abuzaid"
+format: 
+ pdf:
+    latex_engine: xelatex
+    geometry: "letterpaper, margin=0.3in"
+    code-fold: true
+    code-line-numbers: true
+    code-copy: true
+    code-tools: true
+    self-contained: true
+    toc: false
+    toc-location: left
+    number-sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message =  FALSE)
+knitr::opts_chunk$set(warning =  FALSE)
+knitr::opts_chunk$set(error =  FALSE)
+bfcolor <- function(x, color) {
+  if (knitr::is_latex_output()) {
+    sprintf("\\textcolor{%s}{\\textbf{%s}}", color, x)
+  } else if (knitr::is_html_output()) {
+    sprintf("<span style='color: %s;'><b>%s</b></span>", color, x)
+  } else x
+}
+```
+
+::: callout
+**STUDENT NAME**
+
+-   William Nelson (williamnelson)
+-   STUDENT 2 (NetID 2)
+-   STUDENT 3 (NetID 3)
+:::
+
+::: callout-tip
+# Instructions
+
+-   This mini project aims to familiarize you with real-life data sourced from various resources.
+
+-   The mini project includes narrative questions. While these questions are primarily based on lecture material and prerequisites, they may also require independent thinking and investigation.
+
+-   Collaborate in groups of **2-3** students from the **same section**; individual submissions **will not be accepted**.
+
+-   Please use the provided `MP 1.qmd` file to type your solutions and submit the completed assignment as a PDF file. You can utilize `RStudio`for this purpose. For guidance, refer to the [Tutorial: Hello, Quarto](https://quarto.org/docs/get-started/hello/rstudio.html)).
+
+-   Submit your answers via **Gradescope**.
+
+-   Ensure that all `R` code, mathematical formulas, and workings are presented clearly and appropriately.
+
+-   All figures should be numbered, and axes must be labeled.
+:::
+
+::: callout-caution
+# Due Date
+
+**Due Date:** Sunday, May 4, 2025, 11:59 PM
+:::
+
+\newpage
+
+::: callout-tip
+# Survey (Use the attached 'Survey.xlsx' file)
+
+The data was collected during the first lecture from 85 students in the PSTAT 100 class in Spring 2025. The survey has 6 main sections namely Personal Information, Physical Measurements, Health Habits, Diet and Nutrition, Mental Health and Stress, and Academic Life.
+
+These sections are interconnected - for example, physical measurements may relate to health habits and diet, while academic life may impact mental health and sleep patterns.The goal is to explore the relevant variables that may affect students' performance.
+:::
+
+::: callout-important
+# **Question 1**
+
+Based on your understanding of the collected data, propose three questions or hypotheses that can be explored or tested using the data.
+:::
+
+`r bfcolor("ANSWERS TO QUESTION 1:", "red")`\
+
+***Replace this line with your answers***\
+
+\newpage
+
+::: callout-important
+# **Question 2**
+
+Load the data into `R`, obtain basic descriptive statistics for the numerical variables, and provide your interpretation of the results.
+:::
+
+`r bfcolor("ANSWERS TO QUESTION 2:", "red")`\
+
+***Replace this line with your answers***\
+
+\newpage
+
+::: callout-important
+# **Question 3**
+
+a- Identify any missing values in the `Survey` dataset.
+
+b- Assess the missing data mechanism in the dataset.
+
+c- How would you handle the identified missing values? Save the treated dataset as `SurveyMissing`?
+
+d- Can you address any potential bias for this missing values?
+:::
+
+`r bfcolor("ANSWERS TO QUESTION 3:", "red")`\
+
+***Replace this line with your answers***\
+
+\newpage
+
+::: callout-important
+# **Question 4**
+
+a- Detect and handle outliers in the `Weight` variable of the dataset.
+
+i- Justify your outlier detection method (e.g., IQR, Z-score, or visual inspection) and explain your chosen handling strategy (e.g., winsorization, capping, or removal).
+
+ii -Discuss the potential impact of these outliers on the analysis if left unaddressed.
+:::
+
+`r bfcolor("ANSWERS TO QUESTION 4:", "red")`\
+
+***Replace this line with your answers***\
+
+\newpage
+
+::: callout-important
+# **Question 5**
+
+Investigate the relationship between sleep duration (`Sleep`) and perceived stress levels (`Stress`). Address the following:
+
+a- Calculate the average stress level for each sleep duration category and comment.
+
+b- Do certain sleep ranges (e.g., "4–6 hours") correlate with higher/lower stress?
+
+c- Use a boxplot to compare stress distributions across sleep categories and comment!
+:::
+
+`r bfcolor("ANSWERS TO QUESTION 5:", "red")`\
+
+***Replace this line with your answers***\
+
+\newpage
+
+::: callout-important
+# **Question 6**
+
+Create a visualization to show the distribution of Weight, comment!
+:::
+
+`r bfcolor("ANSWERS TO QUESTION 6:", "red")`\
+
+***Replace this line with your answers***\
+
+\newpage
+
+::: callout-important
+# **Question 7**
+
+a.  Define a new variable BMI = $\left(\frac{\text{Weight (lb)}}{\text{Height (in)}^2} \right) \times 703$, and classify students into BMI categories based on Centers for Disease Control and Prevention (CDC) guidelines:
+
+-   BMI \< 18.5 → `"Underweight"`\
+-   18.5 ≤ BMI \< 25 → `"Normal"`\
+-   25 ≤ BMI \< 30 → `"Overweight"`\
+-   BMI ≥ 30 → `"Obese"`
+
+b- Visualize and describe the distribution of students' BMI categories using a bar chart.
+
+c- Explore the correlations between **BMI**, **GPA**, and **Stress**. Use visualizations and correlation statistics to summarize the relationships.
+:::
+
+`r bfcolor("ANSWERS TO QUESTION 7:", "red")`\
+
+***Replace this line with your answers***\
