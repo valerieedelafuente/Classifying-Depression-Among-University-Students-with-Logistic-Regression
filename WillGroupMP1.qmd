@@ -179,8 +179,6 @@ b- Do certain sleep ranges (e.g., "4–6 hours") correlate with higher/lower str
 c- Use a boxplot to compare stress distributions across sleep categories and comment!
 :::
 
-`r bfcolor("ANSWERS TO QUESTION 5:", "red")`\
-
 ```{r}
 library(readxl)
 library(dplyr)
@@ -222,8 +220,6 @@ Based on the boxplot, it appears that a majority of students either fall into th
 Create a visualization to show the distribution of Weight, comment!
 :::
 
-`r bfcolor("ANSWERS TO QUESTION 6:", "red")`\
-
 ```{r}
 hist(Survey$Weight,breaks=80,
      main="Weight Distribution")
@@ -247,7 +243,5 @@ b- Visualize and describe the distribution of students' BMI categories using a b
 
 c- Explore the correlations between **BMI**, **GPA**, and **Stress**. Use visualizations and correlation statistics to summarize the relationships.
 :::
-
-`r bfcolor("ANSWERS TO QUESTION 7:", "red")`\
 
 ***Replace this line with your answers***\
