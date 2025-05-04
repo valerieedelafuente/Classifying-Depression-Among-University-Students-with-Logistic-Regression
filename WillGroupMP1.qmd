@@ -186,7 +186,6 @@ Create a visualization to show the distribution of Weight, comment!
 ```{r}
 hist(Survey$Weight,breaks=80,
      main="Weight Distribution")
-shapiro.test(Survey$Weight)
 ```
 Based on the Histogram of `Weight`, it appears to be relatively normally distributed, with the mean weight being around 160 pounds, with an outlier of 390 pounds.
 
