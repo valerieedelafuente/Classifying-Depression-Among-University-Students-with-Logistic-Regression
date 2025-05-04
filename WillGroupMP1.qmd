@@ -72,6 +72,13 @@ The data was collected during the first lecture from 85 students in the PSTAT 10
 These sections are interconnected - for example, physical measurements may relate to health habits and diet, while academic life may impact mental health and sleep patterns.The goal is to explore the relevant variables that may affect students' performance.
 :::
 
+```{r}
+library(readxl)
+library(ggplot2)
+library(tidyverse)
+Survey <- read_excel("~/RStudio/PSTAT 100/Survey.xlsx")
+```
+
 ::: callout-important
 # **Question 1**
 
@@ -124,9 +131,40 @@ i- Justify your outlier detection method (e.g., IQR, Z-score, or visual inspecti
 ii -Discuss the potential impact of these outliers on the analysis if left unaddressed.
 :::
 
-`r bfcolor("ANSWERS TO QUESTION 4:", "red")`\
+```{r}
+summary(Survey$Weight)
 
-***Replace this line with your answers***\
+Survey %>% ggplot(aes(y=Weight)) + 
+  geom_boxplot() + labs(y="Weight", title = "Boxplot IQR of Weight")
+
+Survey %>% ggplot(aes(x=Weight)) + 
+  geom_histogram(bins = 50) + labs(x="Weight", title = "Histogram of Weight")
+
+boxplot.stats(x=Survey$Weight)$out
+```
+
+\
+I chose these two visualizations to detect outliers because the boxplot automatically visualizes outliers and the histogram gives a good visualization of the density of the distribution of Weight. The histogram and boxplot both tell us visually that the distribution of weight is centered around about 160 pounds with heavy tails that go out to about 105 pounds and 250 pounds. We also clearly see two outliers thanks to the boxplot highlighting those values as points outside the boxplot whiskers. One outlier is quite close to the end of the whisker, so it is just over 1.5 times the IQR away from the mean, which qualifies it as an outlier. The farther outlier is very obviously an outlier, so we check the outlier values using the "boxplot.stats()" function which returns the outlier values in the "out" column. The outliers are 250 and 390.
+
+To decide how to deal with the outliers, I looked directly at the observations with these weight outliers:
+
+```{r}
+Survey %>% filter(Weight >= 250)
+```
+
+We can see from the rest of the values in these 2 rows that the weights make sense for their observations. I would confidently infer that the observation with 390 pounds weight was entered as a joke because every other response was similarly extreme to likely be funny.
+
+With the other outlier of 250 pound weight, while it qualifies as an outlier due to its distance from the mean, it is a completely valid value because the observation is a 6 foot 4 inch tall male who exercises nearly every day. This weight should not be removed or changed, but the 390 pound value should be dealt with.
+
+I believe it is completely acceptable to remove this entire observation due to it most likely not being true, but another option would be to cap this outlier to the highest value either at the end of the boxplot whiskers or a value of our choosing. I will choose to cap this value to the highest realistic response we observed, which is 250 pounds. This will reduce the bias that the outlier has on the mean while keeping the relatively large value in case the outlier was a true value. By capping the outlier, we minimize the bias if it is fake data, as well as retaining the response if it is actually real.
+
+```{r}
+Survey[Survey == 390] <- 250
+
+Survey %>% filter(Weight >= 250)
+```
+
+If we were to leave the outlier value of 390 in the dataset, our mean weight would be biased towards a higher value than the true mean because of how extreme it was compared to the rest of the data. This effect would not be too great though, and we could even keep the value if it appeared to be a person's true weight. Overall, I believe it is beneficial to either remove or cap the outlier.
 
 \newpage
 
