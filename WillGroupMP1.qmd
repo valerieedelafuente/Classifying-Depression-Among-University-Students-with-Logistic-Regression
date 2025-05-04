@@ -183,7 +183,7 @@ c- Use a boxplot to compare stress distributions across sleep categories and com
 library(readxl)
 library(dplyr)
 library(ggplot2)
-Survey <- read_excel("Survey.xlsx")
+#Survey <- read_excel("Survey.xlsx")
 ```
 
 ## a.)
@@ -244,4 +244,38 @@ b- Visualize and describe the distribution of students' BMI categories using a b
 c- Explore the correlations between **BMI**, **GPA**, and **Stress**. Use visualizations and correlation statistics to summarize the relationships.
 :::
 
-***Replace this line with your answers***\
+Before completing this question, I wanted to highlight that the responses for "Height" are all over the place because some participants entered their height in inches while others typed their actual height like "511" for 5 foot 11 inches as an example. There are many things wrong with the Height responses, but we will use them as is.
+
+```{r}
+Survey <- Survey %>% mutate(BMInum = ((Weight/(Heigh**2)) * 703))
+
+Survey <- Survey %>% mutate(
+  BMIcat = case_when(
+    BMInum < 18.5 ~ "Underweight",
+    (BMInum >= 18.5 & BMInum < 25) ~ "Normal",
+    (BMInum >= 25 & BMInum < 30) ~ "Overweight",
+    BMInum >= 30 ~ "Obese"
+    )
+  )
+
+Survey %>% select(Weight,Heigh,BMInum,BMIcat) %>% head()
+```
+
+```{r}
+Survey %>% ggplot(aes(x=BMIcat)) + 
+  geom_bar() + labs(x="BMI Category", y="Frequency", title="Bar Graph of BMI Categories")
+```
+
+We see that there is a greater frequency of "Obese" BMIs than any other category, but this is due to the large number of participants who entered their height in feet instead of inches, so the BMI calculation is incorrect for those observations.
+
+```{r}
+library(corrplot)
+
+surveyCor <- Survey %>% select(BMInum,GPA,Stress) %>% na.omit() %>% cor()
+surveyCor
+
+corrplot(surveyCor, type = "lower",diag = FALSE)
+```
+
+\
+We use the "cor()" function on just the columns we want to obtain the correlation statistics for each pairwise row. We can easily see from the correlation plot that GPA is slightly negatively correlated to BMI and Stress, while Stress has just barely below 0 correlation with BMI. Overall we can conclude that there does not appear to be any significant correlation between BMI, GPA, and Stress.
