@@ -35,7 +35,7 @@ bfcolor <- function(x, color) {
 
 -   William Nelson (williamnelson)
 -   Matthew Arteaga (matthewarteaga)
--   STUDENT 3 (NetID 3)
+-   Hayden Galletta (haydengalletta)
 :::
 
 ::: callout-tip
@@ -76,6 +76,9 @@ These sections are interconnected - for example, physical measurements may relat
 library(readxl)
 library(ggplot2)
 library(tidyverse)
+library(dplyr)
+library(psych)
+library(VIM)
 Survey <- read_excel("~/RStudio/PSTAT 100/Survey.xlsx")
 ```
 
@@ -87,7 +90,7 @@ Based on your understanding of the collected data, propose three questions or hy
 
 `r bfcolor("ANSWERS TO QUESTION 1:", "red")`\
 
-***Replace this line with your answers***\
+The three potential hypotheses that I will propose all relate to potential correlations between different variables. Firstly "Does sleep affect academic performance?". This question aims to answer whether or not there is any correlation between the amount of hours you sleep and your academic success. Secondly "Does Diet/Nutrition affect academic performance?". Similar to the first question this question aims to answer whether or not eating habits affect academic success. Lastly "What is the link between mental health and stress and academic performance?". This question aims to discover whether or not mental health and stress is correlated with grades either positively or negatively.
 
 \newpage
 
@@ -99,7 +102,20 @@ Load the data into `R`, obtain basic descriptive statistics for the numerical va
 
 `r bfcolor("ANSWERS TO QUESTION 2:", "red")`\
 
-***Replace this line with your answers***\
+```{r Question 2}
+# Load the data
+survey_data <- read_excel("Survey.xlsx")
+
+# View the first few rows
+head(survey_data)
+
+# Select only numeric columns
+numeric_data <- select_if(survey_data, is.numeric)
+
+# Get descriptive statistics
+describe(numeric_data)
+```
+The most interesting result from viewing the data is how certain metrics were collected. Since the forum was somewhat vague on how your supposed to answer some questions it can result in some inaccuracies. For example the question regarding height did not specify the form in which the height should be entered resulting in many different outliers. For example one student inputted "511" in order to mean 5'11 which is wildly different than how other people answered the question.
 
 \newpage
 
@@ -117,7 +133,29 @@ d- Can you address any potential bias for this missing values?
 
 `r bfcolor("ANSWERS TO QUESTION 3:", "red")`\
 
-***Replace this line with your answers***\
+```{r Question 3}
+# Count missing values per column
+colSums(is.na(survey_data))
+
+# Total number of missing values
+sum(is.na(survey_data))
+
+aggr(survey_data, col = c("navyblue", "red"), numbers = TRUE, sortVars = TRUE,
+     labels = names(survey_data), cex.axis = 0.7, gap = 3,
+     ylab = c("Missing Data", "Pattern"))
+
+# Identify rows with any missing values
+survey_missing <- survey_data[!complete.cases(survey_data), ]
+
+# Save rows with missing data
+write.csv(survey_missing, "SurveyMissing.csv", row.names = FALSE)
+
+# Remove rows with any missing values
+survey_data_complete <- na.omit(survey_data)
+```
+B and D: By observing the data it seems like the data is likely MNAR (Missing not at random) since the variables that have missing values are alcohol, gpa, and health. These categories all have more than one missing value each which is an indication that the nature of the value being missing has to do with the category itself. In addition these categories make sense to be missing as some people do not feel comfortable sharing this information even if they are anonymous. 
+
+C: Given that there were only 10 missing values and 85 total observations I decided that it would be simplest to just remove the observations with missing values. I decided to still save the missing values to a dataset called SurveyMissing.
 
 \newpage
 
