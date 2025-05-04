@@ -34,7 +34,7 @@ bfcolor <- function(x, color) {
 **STUDENT NAME**
 
 -   William Nelson (williamnelson)
--   STUDENT 2 (NetID 2)
+-   Matthew Arteaga (matthewarteaga)
 -   STUDENT 3 (NetID 3)
 :::
 
@@ -144,7 +144,34 @@ c- Use a boxplot to compare stress distributions across sleep categories and com
 
 `r bfcolor("ANSWERS TO QUESTION 5:", "red")`\
 
-***Replace this line with your answers***\
+```{r}
+library(readxl)
+library(dplyr)
+library(ggplot2)
+Survey <- read_excel("Survey.xlsx")
+```
+
+## a.)
+```{r}
+avg_stress <- Survey %>%
+  group_by(Sleep) %>%
+  summarize(avg = mean(Stress))
+avg_stress
+```
+It appears that the average stress level increases among students the less sleep that they get.
+
+## b.)
+
+The `More than 8 hours` sleep range correlates with the lowest level of stress (`r avg_stress[4,2]`). The `Less than 4 hours` sleep range correlates with the highest level of stress (`r avg_stress[3,2]`).
+
+## c.)
+```{r}
+Survey$Sleep <- factor(Survey$Sleep, levels = c("Less than 4 hours", "4–6 hours", "6–8 hours",
+                                                "More than 8 hours"))
+ggplot(data=Survey,mapping=aes(y=Stress,x=Sleep)) +
+  geom_boxplot()
+```
+Based on the boxplot, it appears that a majority of students either fall into the `6-8 hours` or `More than 8 hours` sleep range; those ranges also have the greatest variability in terms of stress levels. Based on the intervals, it appears that there is a negative correlation between the amount of sleep and the stress level that the student reports.
 
 \newpage
 
@@ -156,7 +183,14 @@ Create a visualization to show the distribution of Weight, comment!
 
 `r bfcolor("ANSWERS TO QUESTION 6:", "red")`\
 
-***Replace this line with your answers***\
+```{r}
+hist(Survey$Weight,breaks=80,
+     main="Weight Distribution")
+shapiro.test(Survey$Weight)
+```
+Based on the Histogram of `Weight`, it appears to be relatively normally distributed, with the mean weight being around 160 pounds, with an outlier of 390 pounds.
+
+
 
 \newpage
 
