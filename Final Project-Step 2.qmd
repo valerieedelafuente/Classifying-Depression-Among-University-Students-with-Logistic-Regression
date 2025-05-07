@@ -39,7 +39,7 @@ bfcolor <- function(x, color) {
 <span style="color: blue;"> **STUDENT NAME **</span> 
 </div>
 - Valerie De La Fuente    (valeriedelafuente)
-- STUDENT 2    (NetID 2)
+- Matthew Arteaga    (matthewarteaga)
 - STUDENT 3    (NetID 3)
 - STUDENT 4    (NetID 4)
 - STUDENT 5    (NetID 5)
@@ -65,23 +65,28 @@ In this step, you will develop clear research questions and hypotheses based on 
 
 **Question 1**
 
+Do certain dietary habits coincide with an increased rate of depression among students?
 
 **Question 2**
-
+Is there a correlation between the amount of sleep a student gets and the proportion of them that are depressed?
 
 **Question 3**
+
+Does the presence (and magnitude) of certain stressors have an impact on the rate at which students are depressed?
 
 ## Hypotheses
 
 **Hypothesis 1**
 
+Students with moderate to healthy dietary habits will have lower rates of depression compared to students with unhealthy dietary habits.
 
 **Hypothesis 2**
 
+Students who average more sleep per night will have lower rates of depression compared to students who average less.
 
 **Hypothesis 3**
 
-
+Students with the highest collective reported stressors (`Academic Pressure + Work Pressure + Financial Stress`) will have higher rates of depression compared to students with lower collective reported stressors.
 
 ## Exploratory Data Analysis (EDA)
 
@@ -93,7 +98,8 @@ library(readr)
 library(tidyverse)
 
 # Load in the data
-depression_data <- read_csv("data/student_depression_dataset.csv")
+# depression_data <- read_csv("data/student_depression_dataset.csv")
+depression_data <- read_csv("student_depression_dataset.csv")
 
 # View the dataset
 head(depression_data)
