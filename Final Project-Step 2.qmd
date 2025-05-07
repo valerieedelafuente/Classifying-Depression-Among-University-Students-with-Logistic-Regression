@@ -87,6 +87,17 @@ In this step, you will develop clear research questions and hypotheses based on 
 
 ## Data Cleaning
 
+```{r}
+# Load necessary packages
+library(readr)
+library(tidyverse)
+
+# Load in the data
+depression_data <- read_csv("data/student_depression_dataset.csv")
+
+# View the dataset
+head(depression_data)
+```
 
 
 ## Descriptive Statistics
