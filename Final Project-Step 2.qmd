@@ -96,13 +96,32 @@ Students with the highest collective reported stressors (`Academic Pressure + Wo
 # Load necessary packages
 library(readr)
 library(tidyverse)
+library(naniar)
+library(janitor)
 
 # Load in the data
-# depression_data <- read_csv("data/student_depression_dataset.csv")
-depression_data <- read_csv("student_depression_dataset.csv")
+depression_data <- read_csv("data/student_depression_dataset.csv")
 
 # View the dataset
 head(depression_data)
+
+# Fix column names
+depression_data <- depression_data %>% 
+  clean_names() %>%
+  rename(
+    gpa = cgpa,
+    suicidal_thoughts = have_you_ever_had_suicidal_thoughts,
+    fam_hist_mental_illness = family_history_of_mental_illness
+  )
+
+# Check for missing data
+sum(is.na(depression_data))
+
+# View missing data
+vis_miss(depression_data)
+
+# Filter out missing data because it is only 3 obs and appears to be missing at random
+
 ```
 
 
