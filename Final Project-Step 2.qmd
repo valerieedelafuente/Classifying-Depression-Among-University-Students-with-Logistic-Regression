@@ -170,8 +170,38 @@ names(depression_data)
 # View missing data
 sum(is.na(depression_data))
 ```
+On the surface, there is no missing data. However, when looking at the categories and their unique values, there are some signs of missingness. 
 
-There is no missing data present.
+For example, some categories have the `Other` category. Since there is not way of figuring out what `Other` mean precisely, it can be considered as an unknown category. To deal with this, it won't remove but will still be concluded to not harm the data integrity.
+
+Besides the other category, there is one variable that encodes its missing value as `?`. This is a placeholder for missing value under the `financial stress` variable. We'll deal with this by encoding it as `NA`.
+
+```{r}
+# Fixing the `financial_stress` variable
+depression_data <- depression_data %>%
+  mutate(
+    financial_stress = as.numeric(financial_stress), 
+    # convert string numbers to integers
+    financial_stress = case_when(
+      financial_stress == "?" ~ NA,
+      # convert "?" to NA values
+      .default = financial_stress))
+
+sum(is.na(depression_data))
+```
+Now, the total number of missing observation is 3, which comes from the `financial stress` variable. 
+
+```{r}
+library(naniar)
+depression_data %>% vis_miss()
+```
+This missingness only makes up $\frac{3}{27,901}$ values or much less than 0.1% of the data set. We can simply remove these values without a problem.
+
+```{r}
+depression_data <- depression_data %>% na.omit()
+depression_data %>% dim()
+```
+
 
 ### Checking Data Types
 
@@ -216,16 +246,9 @@ depression_data <- depression_data %>%
     TRUE ~ city  # Leave valid entries as they are
   ))
 
-# Fixing the `profession` variable to change invalid entries
-depression_data <- depression_data %>% 
-  mutate(profession = case_when(
-    profession == "'Civil Engineer'" ~ "Civil Engineer",
-    profession == "'UX/UI Designer'" ~ "UX/UI Designer",
-    profession == "'Digital Marketer'" ~ "Digital Marketer",
-    profession == "'Content Writer'" ~ "Content Writer",
-    profession == "'Educational Consultant'" ~ "Educational Consultant",
-    TRUE ~ profession # Leave valid entries as they are 
-  ))
+# Since we're interested in Student Depression, 
+# we'll removing observations that are not Student.
+depression_data <- depression_data %>% filter(profession == "Student")
 
 # Fixing the `work_pressure` variable for proper scaling
 depression_data <- depression_data %>%
@@ -272,12 +295,10 @@ depression_data <- depression_data %>%
 # Fixing the `degree` variable to change invalid entries
 depression_data <- depression_data %>%
   mutate(degree = case_when(
-    degree == "'Class 12'" ~ "Diploma",   
-    degree == "ME" ~ "M.Tech",               
-    degree == "BSc" ~ "B.Sc.",
-    degree == "BCA" ~ "B.C.A.",
-    degree == "High School" ~ "Other",        
-    TRUE ~ degree
+    degree == "'Class 12'" ~ "Class 12",
+    degree == "Others" ~ "Other",  
+    # Others could less than HS education or totally unknown. 
+    .default = degree
   ))
 
 # Factorizing the `degree variable`
@@ -294,9 +315,6 @@ depression_data <- depression_data %>%
 
 # Factorizing the `suicidal_thoughts` variable
 depression_data$suicidal_thoughts <- factor(depression_data$suicidal_thoughts)
-
-# Fixing the `financial_stress` variable
-depression_data$financial_stress <- as.numeric(depression_data$financial_stress)
 
 # Factorizing the `fam_mental_illness` variable
 depression_data$fam_mental_illness <- factor(depression_data$fam_mental_illness)
@@ -318,5 +336,11 @@ str(depression_data)
 According to the output, the data was successfully cleaned and the variables are ready for visualization.
 
 ## Descriptive Statistics
+
+```{r}
+library(corrplot)
+cor(depression_data %>% select_if(is.numeric)) %>% corrplot(type="lower", diag = FALSE, method = "number")
+```
+
 
 ## Data Visualization
