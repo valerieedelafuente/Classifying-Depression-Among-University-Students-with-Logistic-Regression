@@ -40,7 +40,7 @@ bfcolor <- function(x, color) {
 
 -   Valerie De La Fuente (valeriedelafuente)
 -   Matthew Arteaga (matthewarteaga)
--   STUDENT 3 (NetID 3)
+-   Phuc Lu (pdlu)
 -   STUDENT 4 (NetID 4)
 -   STUDENT 5 (NetID 5)
 ::::
