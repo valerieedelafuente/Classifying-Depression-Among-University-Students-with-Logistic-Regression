@@ -65,7 +65,9 @@ In this step, you will develop clear research questions and hypotheses based on 
 
 Do certain dietary habits coincide with an increased rate of depression among students?
 
-**Question 2** Is there a correlation between the amount of sleep a student gets and the proportion of them that are depressed?
+**Question 2** 
+
+Is there a correlation between the amount of sleep a student gets and the proportion of them that are depressed?
 
 **Question 3**
 
@@ -299,7 +301,7 @@ depression_data$financial_stress <- as.numeric(depression_data$financial_stress)
 # Factorizing the `fam_mental_illness` variable
 depression_data$fam_mental_illness <- factor(depression_data$fam_mental_illness)
 
-# Turing the `depression` variable back to "yes" and "no" for visualization purposes
+# Turning the `depression` variable back to "yes" and "no" for visualization purposes
 depression_data <- depression_data %>% 
   mutate(depression = case_when(
     depression == 0 ~ "No",
