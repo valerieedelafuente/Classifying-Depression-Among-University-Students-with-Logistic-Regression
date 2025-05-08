@@ -115,6 +115,7 @@ numeric_data <- select_if(survey_data, is.numeric)
 # Get descriptive statistics
 describe(numeric_data)
 ```
+
 The most interesting result from viewing the data is how certain metrics were collected. Since the forum was somewhat vague on how your supposed to answer some questions it can result in some inaccuracies. For example the question regarding height did not specify the form in which the height should be entered resulting in many different outliers. For example one student inputted "511" in order to mean 5'11 which is wildly different than how other people answered the question.
 
 \newpage
@@ -153,7 +154,8 @@ write.csv(survey_missing, "SurveyMissing.csv", row.names = FALSE)
 # Remove rows with any missing values
 survey_data_complete <- na.omit(survey_data)
 ```
-B and D: By observing the data it seems like the data is likely MNAR (Missing not at random) since the variables that have missing values are alcohol, gpa, and health. These categories all have more than one missing value each which is an indication that the nature of the value being missing has to do with the category itself. In addition these categories make sense to be missing as some people do not feel comfortable sharing this information even if they are anonymous. 
+
+B and D: By observing the data it seems like the data is likely MNAR (Missing not at random) since the variables that have missing values are alcohol, gpa, and health. These categories all have more than one missing value each which is an indication that the nature of the value being missing has to do with the category itself. In addition these categories make sense to be missing as some people do not feel comfortable sharing this information even if they are anonymous.
 
 C: Given that there were only 10 missing values and 85 total observations I decided that it would be simplest to just remove the observations with missing values. I decided to still save the missing values to a dataset called SurveyMissing.
 
