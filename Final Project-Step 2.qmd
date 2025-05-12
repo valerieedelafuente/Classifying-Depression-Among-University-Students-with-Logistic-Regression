@@ -341,8 +341,10 @@ According to the output, the data was successfully cleaned and the variables are
 
 ```{r}
 library(corrplot)
-cor(depression_data %>% select_if(is.numeric) %>% select(-c(job_satisfaction,work_pressure))) %>% corrplot(type="lower", diag = FALSE, method = "square")
+cor(depression_data %>% select_if(is.numeric)) %>% corrplot(type="lower", diag = FALSE, method = "number")
 ```
+
+There is a large correlation of 0.77 between the responses of "Job Satisfaction" and "Work Pressure".
 
 ```{r}
 summary(depression_data$age)
