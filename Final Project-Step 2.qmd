@@ -382,6 +382,17 @@ round(prop.table(table(depression_data$financial_stress)), digits = 3)
 
 The distribution of responses for Financial Stress appears very uniform, with each level receiving almost one fifth of the responses, but the highest frequency of responses was for the highest level of Financial Stress.
 
+```{r}
+round(prop.table(table(depression_data$study_satisfaction)), digits = 4)
+```
+
+```{r}
+table(depression_data$work_pressure)
+table(depression_data$job_satisfaction)
+```
+
+Nearly all the students responded they have the lowest level of both Work Pressure and Job Satisfaction. This likely means the students do not have jobs and are full-time students.
+
 ## Data Visualization
 
 -   Depression by Dietary Habits
@@ -445,19 +456,6 @@ depression_data %>%
 depression_data %>% 
   ggplot(aes(x = depression, y = academic_pressure)) +
     geom_boxplot(alpha = 0)
-```
-
--   Depression by Work Pressure
-
-maybe not include or include and talk about reason for all 0's
-
-```{r}
-depression_data %>% 
-  ggplot(aes(x=work_pressure, fill = depression)) + 
-  geom_bar(position = "dodge") + 
-  labs(x = "Work Pressure 0-5 (0 = No Pressure)", y = "Number of Students",
-       title = "Depresion by Work Pressure",
-       fill = "Depression")
 ```
 
 -   Depression by Financial Stress
