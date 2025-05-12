@@ -362,6 +362,8 @@ We see that close to 60% of students responded they experience Depression.
 round(prop.table(table(depression_data$dietary_habits)), digits = 4)
 ```
 
+More students have moderate and unhealthy dietary habits than healthy dietary habits.
+
 ```{r}
 round(prop.table(table(depression_data$sleep_duration)), digits = 3)
 ```
@@ -372,9 +374,13 @@ We see that almost a third of students said they get less than 5 hours of sleep 
 round(prop.table(table(depression_data$academic_pressure)), digits = 4)
 ```
 
+There seems to be a pretty even distribution of responses for Academic Pressure, with the highest frequency of responses in 3, 5, and 4 respectively.
+
 ```{r}
 round(prop.table(table(depression_data$financial_stress)), digits = 3)
 ```
+
+The distribution of responses for Financial Stress appears very uniform, with each level receiving almost one fifth of the responses, but the highest frequency of responses was for the highest level of Financial Stress.
 
 ## Data Visualization
 
