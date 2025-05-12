@@ -350,28 +350,28 @@ There is a large correlation of 0.77 between the responses of "Job Satisfaction"
 summary(depression_data$age)
 ```
 
-Students have a mean age of about 26 years old, with the majority of students being between 18 and 30 years old.
+Students have a mean age of about 26 years old, with the large majority of students being between 18 and 30 years old.
 
 ```{r}
-prop.table(table(depression_data$depression))
+round(prop.table(table(depression_data$depression)), digits = 3)
 ```
 
 We see that close to 60% of students responded they experience Depression.
 
 ```{r}
-prop.table(table(depression_data$dietary_habits))
+round(prop.table(table(depression_data$dietary_habits)), digits = 4)
 ```
 
 ```{r}
-prop.table(table(depression_data$sleep_duration))
+round(prop.table(table(depression_data$sleep_duration)), digits = 3)
 ```
 
 ```{r}
-prop.table(table(depression_data$academic_pressure))
+round(prop.table(table(depression_data$academic_pressure)), digits = 4)
 ```
 
 ```{r}
-prop.table(table(depression_data$financial_stress))
+round(prop.table(table(depression_data$financial_stress)), digits = 3)
 ```
 
 ## Data Visualization
