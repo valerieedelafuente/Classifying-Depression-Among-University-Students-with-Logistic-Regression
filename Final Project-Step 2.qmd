@@ -368,11 +368,71 @@ depression_data %>%
 Depression by Sleep
 
 ```{r}
+depression_data %>% 
+  ggplot(aes(x=sleep_duration, fill = depression)) + 
+  geom_bar(position = "dodge") + 
+  labs(x = "Sleep Duration", y = "Number of Students",
+       title = "Depression by Sleep Duration",
+       fill = "Depression")
 
+depression_data %>% 
+  filter(sleep_duration != "Other") %>% 
+  ggplot(aes(x=sleep_duration, fill = depression)) + 
+  geom_bar(position = "dodge") + 
+  labs(x = "Sleep Duration", y = "Number of Students",
+       title = "Depression by Sleep Duration",
+       fill = "Depression")
 ```
 
 Depression by Academic Pressure
 
+```{r}
+depression_data %>% 
+  ggplot(aes(x=academic_pressure, fill = depression)) + 
+  geom_bar(position = "dodge") + 
+  labs(x = "Academic Pressure 0-5 (0 = No Pressure)", y = "Number of Students",
+       title = "Depresion by Academic Pressure",
+       fill = "Depression")
+
+depression_data %>% 
+  mutate(academic_pressure = case_when(
+    academic_pressure == 0 ~ 1,
+    TRUE ~ academic_pressure)) %>% 
+  ggplot(aes(x=academic_pressure, fill = depression)) + 
+  geom_bar(position = "dodge") + 
+  labs(x = "Academic Pressure 1-5 (1 = Least Pressure)", y = "Number of Students",
+       title = "Depresion by Academic Pressure",
+       fill = "Depression")
+
+depression_data %>% 
+  ggplot(aes(x = depression, y = academic_pressure)) +
+    geom_boxplot(alpha = 0)
+```
+
 Depression by Work Pressure
 
+maybe not include or include and talk about reason for all 0's
+
+```{r}
+depression_data %>% 
+  ggplot(aes(x=work_pressure, fill = depression)) + 
+  geom_bar(position = "dodge") + 
+  labs(x = "Work Pressure 0-5 (0 = No Pressure)", y = "Number of Students",
+       title = "Depresion by Work Pressure",
+       fill = "Depression")
+```
+
 Depression by Financial Stress
+
+```{r}
+depression_data %>% 
+  ggplot(aes(x=financial_stress, fill = depression)) + 
+  geom_bar(position = "dodge") + 
+  labs(x = "Financial Stress 1-5 (0 = Least Stress)", y = "Number of Students",
+       title = "Depresion by Financial Stress",
+       fill = "Depression")
+
+depression_data %>% 
+  ggplot(aes(x = depression, y = financial_stress)) +
+    geom_boxplot(alpha = 0)
+```
