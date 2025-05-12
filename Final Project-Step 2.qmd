@@ -345,3 +345,17 @@ cor(depression_data %>% select_if(is.numeric)) %>% corrplot(type="lower", diag =
 ```
 
 ## Data Visualization
+
+Depression by Dietary Habits
+
+```{r}
+ggplot()
+```
+
+Depression by Sleep
+
+Depression by Academic Pressure
+
+Depression by Work Pressure
+
+Depression by Financial Stress
