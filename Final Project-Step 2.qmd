@@ -341,12 +341,12 @@ According to the output, the data was successfully cleaned and the variables are
 
 ```{r}
 library(corrplot)
-cor(depression_data %>% select_if(is.numeric)) %>% corrplot(type="lower", diag = FALSE, method = "number")
+cor(depression_data %>% select_if(is.numeric) %>% select(-c(job_satisfaction,work_pressure))) %>% corrplot(type="lower", diag = FALSE, method = "square")
 ```
 
 ## Data Visualization
 
-Depression by Dietary Habits
+-   Depression by Dietary Habits
 
 ```{r}
 depression_data %>% 
@@ -365,7 +365,7 @@ depression_data %>%
        fill = "Presence of Depression")
 ```
 
-Depression by Sleep
+-   Depression by Sleep
 
 ```{r}
 depression_data %>% 
@@ -384,7 +384,7 @@ depression_data %>%
        fill = "Depression")
 ```
 
-Depression by Academic Pressure
+-   Depression by Academic Pressure
 
 ```{r}
 depression_data %>% 
@@ -409,7 +409,7 @@ depression_data %>%
     geom_boxplot(alpha = 0)
 ```
 
-Depression by Work Pressure
+-   Depression by Work Pressure
 
 maybe not include or include and talk about reason for all 0's
 
@@ -422,7 +422,7 @@ depression_data %>%
        fill = "Depression")
 ```
 
-Depression by Financial Stress
+-   Depression by Financial Stress
 
 ```{r}
 depression_data %>% 
