@@ -41,7 +41,7 @@ bfcolor <- function(x, color) {
 -   Valerie De La Fuente (valeriedelafuente)
 -   Matthew Arteaga (matthewarteaga)
 -   Phuc Lu (pdlu)
--   STUDENT 4 (NetID 4)
+-   William Nelson (williamnelson)
 -   STUDENT 5 (NetID 5)
 ::::
 
@@ -65,7 +65,7 @@ In this step, you will develop clear research questions and hypotheses based on 
 
 Do certain dietary habits coincide with an increased rate of depression among students?
 
-**Question 2** 
+**Question 2**
 
 Is there a correlation between the amount of sleep a student gets and the proportion of them that are depressed?
 
@@ -170,7 +170,8 @@ names(depression_data)
 # View missing data
 sum(is.na(depression_data))
 ```
-On the surface, there is no missing data. However, when looking at the categories and their unique values, there are some signs of missingness. 
+
+On the surface, there is no missing data. However, when looking at the categories and their unique values, there are some signs of missingness.
 
 For example, some categories have the `Other` category. Since there is not way of figuring out what `Other` mean precisely, it can be considered as an unknown category. To deal with this, it won't remove but will still be concluded to not harm the data integrity.
 
@@ -189,19 +190,20 @@ depression_data <- depression_data %>%
 
 sum(is.na(depression_data))
 ```
-Now, the total number of missing observation is 3, which comes from the `financial stress` variable. 
+
+Now, the total number of missing observation is 3, which comes from the `financial stress` variable.
 
 ```{r}
 library(naniar)
 depression_data %>% vis_miss()
 ```
+
 This missingness only makes up $\frac{3}{27,901}$ values or much less than 0.1% of the data set. We can simply remove these values without a problem.
 
 ```{r}
 depression_data <- depression_data %>% na.omit()
 depression_data %>% dim()
 ```
-
 
 ### Checking Data Types
 
@@ -341,6 +343,5 @@ According to the output, the data was successfully cleaned and the variables are
 library(corrplot)
 cor(depression_data %>% select_if(is.numeric)) %>% corrplot(type="lower", diag = FALSE, method = "number")
 ```
-
 
 ## Data Visualization
