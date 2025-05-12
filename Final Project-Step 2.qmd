@@ -349,10 +349,27 @@ cor(depression_data %>% select_if(is.numeric)) %>% corrplot(type="lower", diag =
 Depression by Dietary Habits
 
 ```{r}
-ggplot()
+depression_data %>% 
+  ggplot(aes(x=dietary_habits, fill = depression)) + 
+  geom_bar(position = "dodge") + 
+  labs(x = "Dietary Habits", y = "Number of Students",
+       title = "Presence of Depression by Dietary Habits",
+       fill = "Presence of Depression")
+
+depression_data %>% 
+  filter(dietary_habits != "Other") %>% 
+  ggplot(aes(x=dietary_habits, fill = depression)) + 
+  geom_bar(position = "dodge") + 
+  labs(x = "Dietary Habits", y = "Number of Students",
+       title = "Presence of Depression by Dietary Habits",
+       fill = "Presence of Depression")
 ```
 
 Depression by Sleep
+
+```{r}
+
+```
 
 Depression by Academic Pressure
 
