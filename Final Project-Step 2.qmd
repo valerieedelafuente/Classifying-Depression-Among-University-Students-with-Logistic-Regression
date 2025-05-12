@@ -366,6 +366,8 @@ round(prop.table(table(depression_data$dietary_habits)), digits = 4)
 round(prop.table(table(depression_data$sleep_duration)), digits = 3)
 ```
 
+We see that almost a third of students said they get less than 5 hours of sleep on average.
+
 ```{r}
 round(prop.table(table(depression_data$academic_pressure)), digits = 4)
 ```
