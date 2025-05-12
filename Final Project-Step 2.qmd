@@ -344,6 +344,34 @@ library(corrplot)
 cor(depression_data %>% select_if(is.numeric) %>% select(-c(job_satisfaction,work_pressure))) %>% corrplot(type="lower", diag = FALSE, method = "square")
 ```
 
+```{r}
+summary(depression_data$age)
+```
+
+Students have a mean age of about 26 years old, with the majority of students being between 18 and 30 years old.
+
+```{r}
+prop.table(table(depression_data$depression))
+```
+
+We see that close to 60% of students responded they experience Depression.
+
+```{r}
+prop.table(table(depression_data$dietary_habits))
+```
+
+```{r}
+prop.table(table(depression_data$sleep_duration))
+```
+
+```{r}
+prop.table(table(depression_data$academic_pressure))
+```
+
+```{r}
+prop.table(table(depression_data$financial_stress))
+```
+
 ## Data Visualization
 
 -   Depression by Dietary Habits
