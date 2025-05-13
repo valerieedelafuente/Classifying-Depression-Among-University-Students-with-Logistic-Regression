@@ -353,7 +353,7 @@ table(depression_data$work_pressure)
 table(depression_data$job_satisfaction)
 ```
 
-Nearly all the students responded they have the lowest level of both Work Pressure and Job Satisfaction. This likely means the students do not have jobs and are full-time students.
+Nearly all the students responded they have the lowest level (0) of both Work Pressure and Job Satisfaction. This likely means the students do not have jobs and are full-time students.
 
 #### Age
 
@@ -366,8 +366,9 @@ Students have a mean age of about 26 years old, with the large majority of stude
 #### GPA
 
 ```{r}
-summary(depression_data$cum_gpa)
-# Students with 0 gpa ?
+# summary(depression_data$cum_gpa)
+# There are a handful of students with 0 GPA
+# This slightly affects mean but minimally
 
 depression_data %>% filter(cum_gpa != 0) %>% 
   select(cum_gpa) %>% 
@@ -382,7 +383,29 @@ On this GPA scale where the minimum seems to be 5 or lower and the maximum is 10
 round(prop.table(table(depression_data$depression)), digits = 3)
 ```
 
-We see that close to 60% of students responded they experience Depression.
+We see just below 60% of students responded they experience Depression.
+
+#### Suicidal Thoughts
+
+```{r}
+round(prop.table(table(depression_data$suicidal_thoughts)), digits = 3)
+```
+
+We see 63.3% of students respond they have had suicidal thoughts.
+
+#### Family Mental Illness
+
+```{r}
+round(prop.table(table(depression_data$fam_mental_illness)), digits = 3)
+```
+
+It is nearly an even split between responses for the presence of mental illness in the student's family, with a slightly higher frequency of "No" responses.
+
+#### Work Study Hours
+
+```{r}
+summary(depression_data$work_study_hours)
+```
 
 #### Dietary Habits
 
