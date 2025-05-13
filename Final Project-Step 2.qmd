@@ -350,12 +350,18 @@ There is a large correlation of 0.77 between the responses of "Job Satisfaction"
 summary(depression_data$age)
 ```
 
+Students have a mean age of about 26 years old, with the large majority of students being between 18 and 30 years old.
+
 ```{r}
 summary(depression_data$cum_gpa)
 # Students with 0 gpa ?
+
+depression_data %>% filter(cum_gpa != 0) %>% 
+  select(cum_gpa) %>% 
+  summary()
 ```
 
-Students have a mean age of about 26 years old, with the large majority of students being between 18 and 30 years old.
+On this GPA scale where the minimum seems to be 5 or lower and the maximum is 10, students have an average GPA of about 7.7.
 
 ```{r}
 round(prop.table(table(depression_data$depression)), digits = 3)
