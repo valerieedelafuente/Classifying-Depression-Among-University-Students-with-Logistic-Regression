@@ -297,7 +297,7 @@ depression_data <- depression_data %>%
 # Fixing the `degree` variable to change invalid entries
 depression_data <- depression_data %>%
   mutate(degree = case_when(
-    degree == "'Class 12'" ~ "Class 12",
+    degree == "'Class 12'" ~ "High School",
     degree == "Others" ~ "Other",  
     # Others could less than HS education or totally unknown. 
     .default = degree
@@ -306,11 +306,11 @@ depression_data <- depression_data %>%
 # Factorizing the `degree variable`
 degree_levels <- c(
   "High School",
-  "BA", "B.Sc.", "B.Com", "B.C.A.", "B.Pharm", "B.Ed", "B.Tech", "BE", "BHM", "B.Arch", "BBA",
+  "BA", "BSc", "B.Com", "BCA", "B.Pharm", "B.Ed", "B.Tech", "BE", "BHM", "B.Arch", "BBA",
   "MA", "MSc", "MBA", "M.Com", "MCA", "M.Tech", "M.Ed", "M.Pharm", "MHM",
   "LLB", "LLM", "MD", "MBBS",
   "PhD",
-  "Others"
+  "Other"
 )
 depression_data <- depression_data %>%
   mutate(degree = factor(degree, levels = degree_levels, ordered = TRUE))
