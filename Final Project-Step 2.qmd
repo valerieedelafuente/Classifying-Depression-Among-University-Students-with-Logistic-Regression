@@ -339,6 +339,8 @@ According to the output, the data was successfully cleaned and the variables are
 
 ## Descriptive Statistics
 
+#### Correlation Plot of Numeric Variables
+
 ```{r}
 library(corrplot)
 cor(depression_data %>% select_if(is.numeric)) %>% corrplot(type="lower", diag = FALSE, method = "number")
@@ -353,11 +355,15 @@ table(depression_data$job_satisfaction)
 
 Nearly all the students responded they have the lowest level of both Work Pressure and Job Satisfaction. This likely means the students do not have jobs and are full-time students.
 
+#### Age
+
 ```{r}
 summary(depression_data$age)
 ```
 
 Students have a mean age of about 26 years old, with the large majority of students being between 18 and 30 years old.
+
+#### GPA
 
 ```{r}
 summary(depression_data$cum_gpa)
@@ -370,11 +376,15 @@ depression_data %>% filter(cum_gpa != 0) %>%
 
 On this GPA scale where the minimum seems to be 5 or lower and the maximum is 10, students have an average GPA of about 7.7.
 
+#### Depression
+
 ```{r}
 round(prop.table(table(depression_data$depression)), digits = 3)
 ```
 
 We see that close to 60% of students responded they experience Depression.
+
+#### Dietary Habits
 
 ```{r}
 round(prop.table(table(depression_data$dietary_habits)), digits = 4)
@@ -382,11 +392,15 @@ round(prop.table(table(depression_data$dietary_habits)), digits = 4)
 
 More students have moderate and unhealthy dietary habits than healthy dietary habits.
 
+#### Sleep Duration
+
 ```{r}
 round(prop.table(table(depression_data$sleep_duration)), digits = 3)
 ```
 
 We see that almost a third of students said they get less than 5 hours of sleep on average.
+
+#### Academic Pressure
 
 ```{r}
 round(prop.table(table(depression_data$academic_pressure)), digits = 4)
@@ -394,21 +408,21 @@ round(prop.table(table(depression_data$academic_pressure)), digits = 4)
 
 There seems to be a pretty even distribution of responses for Academic Pressure, with the highest frequency of responses in 3, 5, and 4 respectively.
 
+#### Financial Stress
+
 ```{r}
 round(prop.table(table(depression_data$financial_stress)), digits = 3)
 ```
 
 The distribution of responses for Financial Stress appears very uniform, with each level receiving almost one fifth of the responses, but the highest frequency of responses was for the highest level of Financial Stress.
 
+#### Study Satisfaction
+
 ```{r}
 round(prop.table(table(depression_data$study_satisfaction)), digits = 4)
 ```
 
 The distribution of responses for Study Satisfaction are similarly quite uniform, with a small decrease in responses for the highest level of Study Satisfaction.
-
-```{r}
-
-```
 
 ## Data Visualization
 
