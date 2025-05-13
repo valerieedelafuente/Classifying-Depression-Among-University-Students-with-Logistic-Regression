@@ -344,7 +344,14 @@ library(corrplot)
 cor(depression_data %>% select_if(is.numeric)) %>% corrplot(type="lower", diag = FALSE, method = "number")
 ```
 
-There is a large correlation of 0.77 between the responses of "Job Satisfaction" and "Work Pressure".
+There is a large correlation of 0.77 between the responses of "Job Satisfaction" and "Work Pressure". We should explore this correlation:
+
+```{r}
+table(depression_data$work_pressure)
+table(depression_data$job_satisfaction)
+```
+
+Nearly all the students responded they have the lowest level of both Work Pressure and Job Satisfaction. This likely means the students do not have jobs and are full-time students.
 
 ```{r}
 summary(depression_data$age)
@@ -400,11 +407,8 @@ round(prop.table(table(depression_data$study_satisfaction)), digits = 4)
 The distribution of responses for Study Satisfaction are similarly quite uniform, with a small decrease in responses for the highest level of Study Satisfaction.
 
 ```{r}
-table(depression_data$work_pressure)
-table(depression_data$job_satisfaction)
-```
 
-Nearly all the students responded they have the lowest level of both Work Pressure and Job Satisfaction. This likely means the students do not have jobs and are full-time students.
+```
 
 ## Data Visualization
 
