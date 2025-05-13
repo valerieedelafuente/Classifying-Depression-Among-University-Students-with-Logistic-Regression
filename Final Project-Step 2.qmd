@@ -350,6 +350,11 @@ There is a large correlation of 0.77 between the responses of "Job Satisfaction"
 summary(depression_data$age)
 ```
 
+```{r}
+summary(depression_data$cum_gpa)
+# Students with 0 gpa ?
+```
+
 Students have a mean age of about 26 years old, with the large majority of students being between 18 and 30 years old.
 
 ```{r}
@@ -385,6 +390,8 @@ The distribution of responses for Financial Stress appears very uniform, with ea
 ```{r}
 round(prop.table(table(depression_data$study_satisfaction)), digits = 4)
 ```
+
+The distribution of responses for Study Satisfaction are similarly quite uniform, with a small decrease in responses for the highest level of Study Satisfaction.
 
 ```{r}
 table(depression_data$work_pressure)
