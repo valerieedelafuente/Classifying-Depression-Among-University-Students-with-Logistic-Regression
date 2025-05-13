@@ -248,9 +248,17 @@ depression_data <- depression_data %>%
     TRUE ~ city  # Leave valid entries as they are
   ))
 
-# Since we're interested in Student Depression, 
-# we'll removing observations that are not Student.
-depression_data <- depression_data %>% filter(profession == "Student")
+# # Fixing the `profession` variable to change invalid entries
+depression_data <- depression_data %>%
+  mutate(profession = case_when(
+    profession == "'Civil Engineer'" ~ "Civil Engineer",
+    profession == "'UX/UI Designer'" ~ "UX/UI Designer",
+    profession == "'Digital Marketer'" ~ "Digital Marketer",
+    profession == "'Content Writer'" ~ "Content Writer",
+    profession == "'Educational Consultant'" ~ "Educational Consultant",
+    TRUE ~ profession # Leave valid entries as they are
+  ))
+
 
 # Fixing the `work_pressure` variable for proper scaling
 depression_data <- depression_data %>%
