@@ -207,7 +207,7 @@ depression_data %>% dim()
 
 ### Checking Data Types
 
-```{r}
+```{r, eval = FALSE}
 # Check data types of the variables
 str(depression_data)
 ```
@@ -338,7 +338,9 @@ depression_data <- depression_data %>%
 
 # Factorizing the `depression` variable
 depression_data$depression <- factor(depression_data$depression)
+```
 
+```{r, eval = FALSE}
 # Check data types of the variables again to ensure everything was properly done
 str(depression_data)
 ```
@@ -347,11 +349,115 @@ According to the output, the data was successfully cleaned and the variables are
 
 ## Descriptive Statistics
 
-#### Correlation Plot of Numeric Variables
+### Opinion Rating Variables
+
+These are variables whose values were collected by asking the subjects to rate their experience from a scale of 1-5.
+These include `academic pressure`, `work pressure`, `study satisfaction`, `financial stress`.
+We chose to isolate these to study their summary statistics because they're in a different class compare to the other kind of numeric statistics. For example, their values are bounded between 0 to 5 because that's the range of the rating scale, where as age and cumulative GPA are not bound to the same constraints.
+
+```{r}
+rating_var <- depression_data %>% 
+  select(academic_pressure, work_pressure, job_satisfaction, study_satisfaction, financial_stress)
+```
+
+```{r, eval = FALSE}
+rating_var %>% summary()
+```
+
+| Statistic | Academic Pressure | Work Pressure | Job Satisfaction | Study Satisfaction | Financial Stress |
+| --------- | ----------------- | ------------- | ---------------- | ------------------ | ---------------- |
+| Min.      | 0.000             | 0.0000000     | 0.000000         | 0.000              | 1.00             |
+| 1st Qu.   | 2.000             | 0.0000000     | 0.000000         | 2.000              | 2.00             |
+| Median    | 3.000             | 0.0000000     | 0.000000         | 3.000              | 3.00             |
+| Mean      | 3.141             | 0.0002509     | 0.000681         | 2.944              | 3.14             |
+| 3rd Qu.   | 4.000             | 0.0000000     | 0.000000         | 4.000              | 4.00             |
+| Max.      | 5.000             | 3.0000000     | 4.000000         | 5.000              | 5.00             |
+
+A category that immediately jumps out is the extremely low overall rating for work pressure. This means that the majority of students in the data set reported that they have no pressure with their work or job related responsibilities.
+
+
+```{r, echo = FALSE}
+# table of work pressure and rating
+depression_data$work_pressure %>% table()
+```
+
+```{r, include = FALSE}
+depression_data %>% 
+  filter(work_pressure > 0) %>% 
+  arrange(work_pressure)
+```
+
+There are 2 students that reported a 3. These are male students from Rajkot and Chennai. They also share the same rating of 3 for financial stress, cumulative GPA of 0.0, they seem to be very satisfied with their jobs with a rating of 4, no family history of mental illness, and both have had high school education. 
+
+The one student who rated a 1 for work pressure is a male student from from Lucknow, experiences academic pressure, 0.0 cumulative GPA, 1 for job satisfaction, does have suicidal thoughts, 3 hours of work/study a day, and does have family history of mental illness.
+
+Job satisfaction is another category with the majority of students express a rating of 0.
+For those with high job satisfaction, we want to know what these type of people are and what they do
+
+```{r}
+# people with job satisfaction > 0
+good_job <- depression_data %>% filter(job_satisfaction > 0)
+good_job %>% nrow()
+```
+There are 8 students in this data who rated themselves as having job satisfaction greater than 0.
+
+We're most interested in those who have the highest job satisfaction.
+```{r}
+good_job %>% filter(job_satisfaction == max(job_satisfaction))
+```
+There are two male students in this data who rated their job satisfaction a 4 which is higher than the majority of people in this data set. Besides high job satisfaction, the other attributes that they have in common are rated 3 for academic pressure, rated 3 for work pressure, 0 study satisfaction, education up to grade 12, and no family history of mental illness.
+
+The first person is a 38 years old healthy male from Chennai, India. This person sleeps for 5-6 hours, no suicidal thoughts, 2 hours of work-study, rated a 3 for financial stress, and no depression.
+
+The second person is an 18 years old moderately healthy male from Rajkot. This person sleeps for 7-8 hours, does have suicidal thoughts, 9 hours of work-study, rated a 4 for financial stress, and does have depression.
+
+```{r}
+# ascending order
+depression_data %>% filter(work_pressure > 0) %>% arrange(work_pressure)
+```
+The person with the highest work pressure is also the person with the highest job satisfaction.
+
+```{r}
+depression_data <- depression_data %>% na.omit()
+```
+
+### Other Numeric Variables
+These variables include id, age, cumulative GPA and work study hours.
+
+```{r}
+other_numeric_var <- depression_data %>% select_if(is.numeric) %>% select(-(rating_var %>% colnames))
+```
+```{r, eval = FALSE}
+other_numeric_var %>% summary()
+```
+
+| Statistic | ID     | Age  | Cumulative GPA | Work/Study Hours |
+| --------- | ------ | ---- | -------------- | ---------------- |
+| Min.      | 2      | 18.0 | 0.000          | 0.000            |
+| 1st Qu.   | 35053  | 21.0 | 6.290          | 4.000            |
+| Median    | 70694  | 25.0 | 7.770          | 8.000            |
+| Mean      | 70449  | 25.8 | 7.659          | 7.158            |
+| 3rd Qu.   | 105828 | 30.0 | 8.920          | 10.000           |
+| Max.      | 140699 | 59.0 | 10.000         | 12.000           |
+
+ID can also be omitted from summary statistics because its numeric value doesn't carry the same meaning as all of the other variables. It's purpose is simply to provide a unique identity to each observation.
+
+The student with the oldest age in the data set is 59 years old and the youngest student is 18 years old. On average, the students in the data set tend to be 26 years old. Since the mean is slightly higher than the median, this reveals that the shape of the distribution is slightly right-skewed with tail. The age with the highest number of students is 24 and is followed at students who are 20 years old.
+
+Since this data set was based in India, their GPA scale system is not the same as the U.S. Instead of using the 4.0 scale, India's GPA scale uses the 10.0 scale where it's out of 10. Under this system, the highest GPA is 10.0 decreases from there. In this data set, the highest cumulative GPA is 10.0 while the lowest is 0. The mean cumulative GPA is 7.656 or terms of the letter grade scale, it's approximately a B letter grade. 
+
+There are 9 students who reported having a cumulative GPA of 0.0, which is almost impossible to receive if they went to school. However, a cumulative GPA of 0 is possible if the students had just started school. Among these 9 students, the most shocking trait that they share is that 2/3 of them did express having suicidal thoughts and the majority of them does not have education beyond high school.
+
+For work or study hours, the max number is 12 hours can reflect intensive work or academic schedules. On the other hand, the lowest number of hour for work or study is 0, which means that these students do not engage with work or study in a day. On average, the students tend to work 7.158 hours. Since the middle of 0 to 12 is 6, but the mean and median are above that, it can be inferred that students tend to a high academic or work-related workload.
+
+
+### Correlation Plot of Numeric Variables
 
 ```{r}
 library(corrplot)
-cor(depression_data %>% select_if(is.numeric)) %>% corrplot(type="lower", diag = FALSE, method = "number")
+cor(depression_data %>% 
+      select_if(is.numeric)) %>% 
+  corrplot(type="lower", diag = FALSE, method = "number")
 ```
 
 There is a large correlation of 0.77 between the responses of "Job Satisfaction" and "Work Pressure". We should explore this correlation:
@@ -363,7 +469,7 @@ table(depression_data$job_satisfaction)
 
 Nearly all the students responded they have the lowest level (0) of both Work Pressure and Job Satisfaction. This likely means the students do not have jobs and are full-time students.
 
-#### Age
+### Age
 
 ```{r}
 summary(depression_data$age)
@@ -454,6 +560,10 @@ round(prop.table(table(depression_data$study_satisfaction)), digits = 4)
 ```
 
 The distribution of responses for Study Satisfaction are similarly quite uniform, with a small decrease in responses for the highest level of Study Satisfaction.
+
+
+
+
 
 ## Data Visualization
 
