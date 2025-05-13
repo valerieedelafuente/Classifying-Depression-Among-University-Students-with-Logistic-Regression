@@ -366,7 +366,7 @@ Students have a mean age of about 26 years old, with the large majority of stude
 #### GPA
 
 ```{r}
-# summary(depression_data$cum_gpa)
+summary(depression_data$cum_gpa)
 # There are a handful of students with 0 GPA
 # This slightly affects mean but minimally
 
