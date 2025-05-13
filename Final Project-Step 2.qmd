@@ -42,7 +42,7 @@ bfcolor <- function(x, color) {
 -   Matthew Arteaga (matthewarteaga)
 -   Phuc Lu (pdlu)
 -   William Nelson (williamnelson)
--   STUDENT 5 (NetID 5)
+-   Hayden Galletta (haydengalletta)
 ::::
 
 ::: callout-caution
@@ -526,3 +526,63 @@ depression_data %>%
   ggplot(aes(x = depression, y = financial_stress)) +
     geom_boxplot(alpha = 0)
 ```
+
+## Data Visualization (Hayden)
+
+This first graph is a bar plot that helps to answer hypothesis 1 by visualizing the correlation between a healthy diet and depression. The results of this bar plot clearly indicate a strong correlation with a unhealthy diet and rates of depression. 
+
+```{r}
+# For dietary habits
+ggplot(depression_data, aes(x = dietary_habits, fill = factor(depression))) +
+  geom_bar(position = "fill", color = "black") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Depression Distribution by Dietary Habit",
+       x = "Dietary Habit", y = "Proportion",
+       fill = "Depression") +
+  theme_bw(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+The second graph is a bar plot that helps to answer hypothesis 2 by visualizing the correlation between sleep patterns and depression. The results of this bar plot seem to indicate that people getting less than 5 hours of sleep have a significantly higher rate of depression and people who get more than 8 hours of sleep have a significantly lower rate of depression. 
+
+```{r}
+# Convert 'depression' factor to numeric: "No" = 0, "Yes" = 1
+depression_data <- depression_data %>%
+  mutate(depression_numeric = as.numeric(depression) - 1)
+
+# Create summarized depression rates and standard errors by sleep duration
+sleep_summary <- depression_data %>%
+  group_by(sleep_duration) %>%
+  summarise(
+    mean_dep = mean(depression_numeric, na.rm = TRUE),
+    se = sd(depression_numeric, na.rm = TRUE) / sqrt(n())
+  )
+
+# Bar plot with error bars
+ggplot(sleep_summary, aes(x = sleep_duration, y = mean_dep, fill = sleep_duration)) +
+  geom_col(show.legend = FALSE) +
+
+  labs(
+    title = "Depression Rate by Sleep Duration",
+    x = "Sleep Duration",
+    y = "Mean Depression Rate"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+This final graph is a boxplot that helps visualize hypothesis 3 and shows the correlation between multiple stressor factors and depression. The results seem to indicate a correlation with the total stressors and depression.
+
+```{r}
+depression_data$financial_stress <- as.numeric(depression_data$financial_stress)
+depression_data$total_stress <- depression_data$academic_pressure +
+                                 depression_data$work_pressure +
+                                 depression_data$financial_stress
+
+ggplot(depression_data, aes(x = factor(depression), y = total_stress, fill = factor(depression))) +
+  geom_boxplot() +
+  labs(title = "Total Reported Stress vs Depression", x = "Depression (0 = No, 1 = Yes)", y = "Total Stress") +
+  theme_minimal()
+```
+
