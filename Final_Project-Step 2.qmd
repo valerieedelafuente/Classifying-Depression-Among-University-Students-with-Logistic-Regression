@@ -330,9 +330,7 @@ According to the output, the data was successfully cleaned and the variables are
 
 ### Opinion Rating Variables
 
-These are variables whose values were collected by asking the subjects to rate their experience from a scale of 1-5.
-These include `academic pressure`, `work pressure`, `study satisfaction`, `financial stress`.
-We chose to isolate these to study their summary statistics because they're in a different class compare to the other kind of numeric statistics. For example, their values are bounded between 0 to 5 because that's the range of the rating scale, where as age and cumulative GPA are not bound to the same constraints.
+These are variables whose values were collected by asking the subjects to rate their experience from a scale of 1-5. These include `academic pressure`, `work pressure`, `study satisfaction`, `financial stress`. We chose to isolate these to study their summary statistics because they're in a different class compare to the other kind of numeric statistics. For example, their values are bounded between 0 to 5 because that's the range of the rating scale, where as age and cumulative GPA are not bound to the same constraints.
 
 ```{r}
 rating_var <- depression_data %>% 
@@ -344,13 +342,13 @@ rating_var %>% summary()
 ```
 
 | Statistic | Academic Pressure | Work Pressure | Job Satisfaction | Study Satisfaction | Financial Stress |
-| --------- | ----------------- | ------------- | ---------------- | ------------------ | ---------------- |
-| Min.      | 0.000             | 0.0000000     | 0.000000         | 0.000              | 1.00             |
-| 1st Qu.   | 2.000             | 0.0000000     | 0.000000         | 2.000              | 2.00             |
-| Median    | 3.000             | 0.0000000     | 0.000000         | 3.000              | 3.00             |
-| Mean      | 3.141             | 0.0004300     | 0.000681         | 2.944              | 3.14             |
-| 3rd Qu.   | 4.000             | 0.0000000     | 0.000000         | 4.000              | 4.00             |
-| Max.      | 5.000             | 5.0000000     | 4.000000         | 5.000              | 5.00             |
+|------------|------------|------------|------------|------------|------------|
+| Min. | 0.000 | 0.0000000 | 0.000000 | 0.000 | 1.00 |
+| 1st Qu. | 2.000 | 0.0000000 | 0.000000 | 2.000 | 2.00 |
+| Median | 3.000 | 0.0000000 | 0.000000 | 3.000 | 3.00 |
+| Mean | 3.141 | 0.0004300 | 0.000681 | 2.944 | 3.14 |
+| 3rd Qu. | 4.000 | 0.0000000 | 0.000000 | 4.000 | 4.00 |
+| Max. | 5.000 | 5.0000000 | 4.000000 | 5.000 | 5.00 |
 
 A category that immediately jumps out is the extremely low overall rating for `work pressure`. This means that the majority of students in the data set reported that they have no pressure with their work or job related responsibilities.
 
@@ -358,9 +356,10 @@ A category that immediately jumps out is the extremely low overall rating for `w
 # table of work pressure and rating
 depression_data$work_pressure %>% table()
 ```
-|Work Pressure|    0   | 1 |  2 | 3 | 4 | 5 |
-|---|---|---|---|---|---|---|
-|Frequency| 27710  | 0 |  1 | 0 | 0 | 2 |
+
+| Work Pressure | 0     | 1   | 2   | 3   | 4   | 5   |
+|---------------|-------|-----|-----|-----|-----|-----|
+| Frequency     | 27710 | 0   | 1   | 0   | 0   | 2   |
 
 ```{r, eval = FALSE, echo = FALSE}
 depression_data %>% 
@@ -368,12 +367,11 @@ depression_data %>%
   arrange(work_pressure)
 ```
 
-There are 2 students that reported 5 for work pressure. These are male students from Rajkot and Chennai. They also share the same rating of 3 for financial stress, cumulative GPA of 0.0, they seem to be very satisfied with their jobs with a rating of 4, no family history of mental illness, and both have had high school education. 
+There are 2 students that reported 5 for work pressure. These are male students from Rajkot and Chennai. They also share the same rating of 3 for financial stress, cumulative GPA of 0.0, they seem to be very satisfied with their jobs with a rating of 4, no family history of mental illness, and both have had high school education.
 
 The one student who rated a 2 for work pressure is a male student from from Lucknow, experiences academic pressure, 0.0 cumulative GPA, 1 for job satisfaction, does have suicidal thoughts, 3 hours of work/study a day, and does have family history of mental illness.
 
-`Job satisfaction` is another category with the majority of students express a rating of 0.
-For those with high job satisfaction, we want to know what these type of people are and what they do.
+`Job satisfaction` is another category with the majority of students express a rating of 0. For those with high job satisfaction, we want to know what these type of people are and what they do.
 
 ```{r}
 # people with job satisfaction > 0
@@ -383,12 +381,15 @@ good_job <- depression_data %>% filter(job_satisfaction > 0)
 ```{r,eval= FALSE, echo = FALSE}
 good_job %>% nrow()
 ```
+
 There are 8 students in this data who rated themselves as having job satisfaction greater than 0.
 
 We're most interested in those who have the highest job satisfaction.
+
 ```{r, eval = FALSE}
 good_job %>% filter(job_satisfaction == max(job_satisfaction))
 ```
+
 There are two male students in this data who rated their job satisfaction a 4 which is higher than the majority of people in this data set. Besides high job satisfaction, the other attributes that they have in common are rated 3 for academic pressure, rated 3 for work pressure, 0 study satisfaction, education up to grade 12, and no family history of mental illness.
 
 The first person is a 38 years old healthy male from Chennai, India. This person sleeps for 5-6 hours, no suicidal thoughts, 2 hours of work-study, rated a 3 for financial stress, and no depression.
@@ -400,20 +401,23 @@ depression_data %>%
   filter(work_pressure == max(work_pressure), 
          job_satisfaction == max(job_satisfaction))
 ```
+
 Between `work pressure` and `job satisfaction`, the two students with the highest rating 5 for work pressure is also the person with the highest job satisfaction with a rating of 4. They both have at least high school education, 0 cumulative GPA, 0 study satisfaction, and no family history of having a mental illness.
 
 ### Other Numeric Variables
+
 These variables include id, age, cumulative GPA and work/study hours.
 
 ```{r}
 other_numeric_var <- depression_data %>% select_if(is.numeric) %>% select(-(rating_var %>% colnames))
 ```
+
 ```{r, eval = FALSE}
 other_numeric_var %>% summary()
 ```
 
 | Statistic | ID     | Age  | Cumulative GPA | Work/Study Hours |
-| --------- | ------ | ---- | -------------- | ---------------- |
+|-----------|--------|------|----------------|------------------|
 | Min.      | 2      | 18.0 | 0.000          | 0.000            |
 | 1st Qu.   | 35053  | 21.0 | 6.290          | 4.000            |
 | Median    | 70694  | 25.0 | 7.770          | 8.000            |
@@ -425,7 +429,7 @@ other_numeric_var %>% summary()
 
 The student with the oldest age in the data set is 59 years old and the youngest student is 18 years old. On average, the students in the data set tend to be 26 years old. Since the mean is slightly higher than the median, this reveals that the shape of the distribution is slightly right-skewed with tail. The age with the highest number of students is 24 and is followed at students who are 20 years old.
 
-Since this data set was based in India, their GPA scale system is not the same as the U.S. Instead of using the 4.0 scale, India's GPA scale uses the 10.0 scale where it's out of 10. Under this system, the highest GPA is 10.0 decreases from there. In this data set, the highest cumulative GPA is 10.0 while the lowest is 0. The mean cumulative GPA is 7.656 or terms of the letter grade scale, it's approximately a B letter grade. 
+Since this data set was based in India, their GPA scale system is not the same as the U.S. Instead of using the 4.0 scale, India's GPA scale uses the 10.0 scale where it's out of 10. Under this system, the highest GPA is 10.0 decreases from there. In this data set, the highest cumulative GPA is 10.0 while the lowest is 0. The mean cumulative GPA is 7.656 or terms of the letter grade scale, it's approximately a B letter grade.
 
 There are 9 students who reported having a cumulative GPA of 0.0, which is almost impossible to receive if they went to school. However, a cumulative GPA of 0 is possible if the students had just started school. Among these 9 students, the most shocking trait that they share is that 2/3 of them did express having suicidal thoughts and the majority of them does not have education beyond high school.
 
@@ -439,6 +443,7 @@ cor(depression_data %>%
       select_if(is.numeric)) %>% 
   corrplot(type="lower", diag = FALSE, method = "number", tl.srt = 45)
 ```
+
 There is a large correlation of 0.77 between the responses of `Job Satisfaction` and `Work Pressure`. We should explore this correlation:
 
 ```{r, eval = FALSE}
@@ -455,7 +460,6 @@ table(depression_data$job_satisfaction)
 | 4                   | 0         |
 | 5                   | 2         |
 
-
 | Job Satisfaction Level | Frequency |
 |------------------------|-----------|
 | 0                      | 27,890    |
@@ -464,9 +468,10 @@ table(depression_data$job_satisfaction)
 | 3                      | 1         |
 | 4                      | 2         |
 
-When looking at the frequency table for `work pressure` and `job satisfaction`, it is the case that nearly all of the students expressed that they have the lowest level (0) in both variables.The majority of students reported 0 in both variable could also explain the high correlation. That is, if a student reported having 0 work pressure, it is also extremely likely that they will also report having 0 job satisfaction. A reason for this probably because the students do not have jobs and are full-time students. 
+When looking at the frequency table for `work pressure` and `job satisfaction`, it is the case that nearly all of the students expressed that they have the lowest level (0) in both variables.The majority of students reported 0 in both variable could also explain the high correlation. That is, if a student reported having 0 work pressure, it is also extremely likely that they will also report having 0 job satisfaction. A reason for this probably because the students do not have jobs and are full-time students.
 
 ### Binary Variables
+
 Since these variables are continuous, it is better to analyze them by comparing proportions of the two categories.
 
 #### Depression
@@ -474,9 +479,10 @@ Since these variables are continuous, it is better to analyze them by comparing 
 ```{r, eval = FALSE}
 round(prop.table(table(depression_data$depression)), digits = 3)
 ```
-|Depression |  No |  Yes |
-|---|---|---|
-|Proportion | 0.414 | 0.586 | 
+
+| Depression | No    | Yes   |
+|------------|-------|-------|
+| Proportion | 0.414 | 0.586 |
 
 We see just below 60% of students in the data set responded they experience Depression. We proportion is not necessarily imbalanced, but it's not totally balanced either. It's not necessary to be concern about misrepresentation.
 
@@ -486,24 +492,26 @@ We see just below 60% of students in the data set responded they experience Depr
 round(prop.table(table(depression_data$suicidal_thoughts)), digits = 3)
 ```
 
-|Suicidal Thoughts |  No |  Yes |
-|---|---|---|
-|Proportion | 0.367 | 0.633 | 
+| Suicidal Thoughts | No    | Yes   |
+|-------------------|-------|-------|
+| Proportion        | 0.367 | 0.633 |
 
-We see 63.3% of students respond they have had suicidal thoughts. This means that there are more students who reported having suicidal thoughts than those who did not. This  proportion is imbalanced but it's doesn't seem to be arbitrary. It would be interesting to explore the common attributes among those who reported having suicidal thoughts. On the other hand, the same thing could be done for those who reported not having suicidal thoughts. Learning about the main indicator(s) for suicidal thoughts or beneficial habits of those without suicidal thoughts can potentially help students with suicidal thoughts later on by incorporating the good habits into their lives.
+We see 63.3% of students respond they have had suicidal thoughts. This means that there are more students who reported having suicidal thoughts than those who did not. This proportion is imbalanced but it's doesn't seem to be arbitrary. It would be interesting to explore the common attributes among those who reported having suicidal thoughts. On the other hand, the same thing could be done for those who reported not having suicidal thoughts. Learning about the main indicator(s) for suicidal thoughts or beneficial habits of those without suicidal thoughts can potentially help students with suicidal thoughts later on by incorporating the good habits into their lives.
 
 #### Family Mental Illness
 
 ```{r, eval = FALSE}
 round(prop.table(table(depression_data$fam_mental_illness)), digits = 3)
 ```
-|Family History Mental Illness |  No |  Yes |
-|---|---|---|
-|Proportion | 0.516 | 0.484 | 
+
+| Family History Mental Illness | No    | Yes   |
+|-------------------------------|-------|-------|
+| Proportion                    | 0.516 | 0.484 |
 
 It is nearly an even split between responses for the presence of mental illness in the student's family, with a slightly higher frequency of "No" responses. Since both groups are fairly even, it could be worthwhile to explore if having a family history of a mental illness could potentially contribute to a student developing depression in their lives.
 
 ### Categorical Variables
+
 These are variables with categories and numerical values to show how many students fall under each category.
 
 #### Dietary Habits
@@ -511,8 +519,9 @@ These are variables with categories and numerical values to show how many studen
 ```{r, eval = FALSE}
 round(prop.table(table(depression_data$dietary_habits)), digits = 4)
 ```
+
 | Dietary Habit | Healthy | Moderate | Unhealthy | Other  |
-| ---           | ---     | ---      | ---       | ---    |
+|---------------|---------|----------|-----------|--------|
 | Proportion    | 0.2742  | 0.3556   | 0.3698    | 0.0004 |
 
 More students have moderate and unhealthy dietary habits than healthy dietary habits. There is a very small amount of students reported having a more nuanced dietary habit. It is difficult to tell what they eat, but we decided to just leave this category be instead of removing it.
@@ -522,95 +531,16 @@ More students have moderate and unhealthy dietary habits than healthy dietary ha
 ```{r, eval = FALSE}
 round(prop.table(table(depression_data$sleep_duration)), digits = 3)
 ```
-|Sleep Duration | Less than 5 hours  | 5-6 hours  | 7-8 hours | More than 8 hours | Other  |
-| ---           | ---                | ---        | ---       | ---               | ---    |
-|Proportion     | 0.298              | 0.222      |   0.263   | 0.217             | 0.001  |
+
+| Sleep Duration | Less than 5 hours | 5-6 hours | 7-8 hours | More than 8 hours | Other |
+|------------|------------|------------|------------|------------|------------|
+| Proportion     | 0.298             | 0.222     | 0.263     | 0.217             | 0.001 |
 
 We see that almost a third of students said they get less than 5 hours of sleep on average. There is again, a small group of students who report having a sleep duration that's different from the other categories. They could have a very unstable sleeping habit that fluctuates a lot every night. This category could be valuable for looking into if having a regular sleep schedule as opposed to one that fluctuates can contribute to having depression.
 
 ## Data Visualization
 
-### Depression by Dietary Habits
-
-```{r}
-depression_data %>% 
-  ggplot(aes(x=dietary_habits, fill = depression)) + 
-  geom_bar(position = "dodge") + 
-  labs(x = "Dietary Habits", y = "Number of Students",
-       title = "Presence of Depression by Dietary Habits",
-       fill = "Presence of Depression")
-
-depression_data %>% 
-  filter(dietary_habits != "Other") %>% 
-  ggplot(aes(x=dietary_habits, fill = depression)) + 
-  geom_bar(position = "dodge") + 
-  labs(x = "Dietary Habits", y = "Number of Students",
-       title = "Presence of Depression by Dietary Habits",
-       fill = "Presence of Depression")
-```
-
--   Depression by Sleep
-
-```{r}
-depression_data %>% 
-  ggplot(aes(x=sleep_duration, fill = depression)) + 
-  geom_bar(position = "dodge") + 
-  labs(x = "Sleep Duration", y = "Number of Students",
-       title = "Depression by Sleep Duration",
-       fill = "Depression")
-
-depression_data %>% 
-  filter(sleep_duration != "Other") %>% 
-  ggplot(aes(x=sleep_duration, fill = depression)) + 
-  geom_bar(position = "dodge") + 
-  labs(x = "Sleep Duration", y = "Number of Students",
-       title = "Depression by Sleep Duration",
-       fill = "Depression")
-```
-
--   Depression by Academic Pressure
-
-```{r}
-depression_data %>% 
-  ggplot(aes(x=academic_pressure, fill = depression)) + 
-  geom_bar(position = "dodge") + 
-  labs(x = "Academic Pressure 0-5 (0 = No Pressure)", y = "Number of Students",
-       title = "Depresion by Academic Pressure",
-       fill = "Depression")
-
-depression_data %>% 
-  mutate(academic_pressure = case_when(
-    academic_pressure == 0 ~ 1,
-    TRUE ~ academic_pressure)) %>% 
-  ggplot(aes(x=academic_pressure, fill = depression)) + 
-  geom_bar(position = "dodge") + 
-  labs(x = "Academic Pressure 1-5 (1 = Least Pressure)", y = "Number of Students",
-       title = "Depresion by Academic Pressure",
-       fill = "Depression")
-
-depression_data %>% 
-  ggplot(aes(x = depression, y = academic_pressure)) +
-    geom_boxplot(alpha = 0)
-```
-
--   Depression by Financial Stress
-
-```{r}
-depression_data %>% 
-  ggplot(aes(x=financial_stress, fill = depression)) + 
-  geom_bar(position = "dodge") + 
-  labs(x = "Financial Stress 1-5 (0 = Least Stress)", y = "Number of Students",
-       title = "Depresion by Financial Stress",
-       fill = "Depression")
-
-depression_data %>% 
-  ggplot(aes(x = depression, y = financial_stress)) +
-    geom_boxplot(alpha = 0)
-```
-
-## Data Visualization (Hayden)
-
-This first graph is a bar plot that helps to answer hypothesis 1 by visualizing the correlation between a healthy diet and depression. The results of this bar plot clearly indicate a strong correlation with a unhealthy diet and rates of depression. 
+This first graph is a bar plot that helps to answer hypothesis 1 by visualizing the correlation between a healthy diet and depression. The results of this bar plot clearly indicate a strong correlation with a unhealthy diet and rates of depression.
 
 ```{r}
 # For dietary habits
@@ -624,8 +554,7 @@ ggplot(depression_data, aes(x = dietary_habits, fill = factor(depression))) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-
-The second graph is a bar plot that helps to answer hypothesis 2 by visualizing the correlation between sleep patterns and depression. The results of this bar plot seem to indicate that people getting less than 5 hours of sleep have a significantly higher rate of depression and people who get more than 8 hours of sleep have a significantly lower rate of depression. 
+The second graph is a bar plot that helps to answer hypothesis 2 by visualizing the correlation between sleep patterns and depression. The results of this bar plot seem to indicate that people getting less than 5 hours of sleep have a significantly higher rate of depression and people who get more than 8 hours of sleep have a significantly lower rate of depression.
 
 ```{r}
 # Convert 'depression' factor to numeric: "No" = 0, "Yes" = 1
@@ -666,4 +595,3 @@ ggplot(depression_data, aes(x = factor(depression), y = total_stress, fill = fac
   labs(title = "Total Reported Stress vs Depression", x = "Depression (0 = No, 1 = Yes)", y = "Total Stress") +
   theme_minimal()
 ```
-
