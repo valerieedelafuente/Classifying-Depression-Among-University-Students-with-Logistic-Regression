@@ -342,7 +342,7 @@ rating_var %>% summary()
 ```
 
 | Statistic | Academic Pressure | Work Pressure | Job Satisfaction | Study Satisfaction | Financial Stress |
-|------------|------------|------------|------------|------------|------------|
+|----|----|----|----|----|----|
 | Min. | 0.000 | 0.0000000 | 0.000000 | 0.000 | 1.00 |
 | 1st Qu. | 2.000 | 0.0000000 | 0.000000 | 2.000 | 2.00 |
 | Median | 3.000 | 0.0000000 | 0.000000 | 3.000 | 3.00 |
@@ -533,7 +533,7 @@ round(prop.table(table(depression_data$sleep_duration)), digits = 3)
 ```
 
 | Sleep Duration | Less than 5 hours | 5-6 hours | 7-8 hours | More than 8 hours | Other |
-|------------|------------|------------|------------|------------|------------|
+|----------------|-------------------|-----------|-----------|-------------------|-------|
 | Proportion     | 0.298             | 0.222     | 0.263     | 0.217             | 0.001 |
 
 We see that almost a third of students said they get less than 5 hours of sleep on average. There is again, a small group of students who report having a sleep duration that's different from the other categories. They could have a very unstable sleeping habit that fluctuates a lot every night. This category could be valuable for looking into if having a regular sleep schedule as opposed to one that fluctuates can contribute to having depression.
