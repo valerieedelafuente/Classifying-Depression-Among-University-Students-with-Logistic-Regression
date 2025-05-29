@@ -44,6 +44,9 @@ ui <- fluidPage(
             selected = 1
           ),
           
+          bsTooltip("variable1", "Change input variable",
+                    placement = "right", trigger = "hover"),
+          
           selectInput(
             "variable2",
             "Select Optional Group/Y-axis Variable:",
@@ -51,6 +54,8 @@ ui <- fluidPage(
             selected = 1
           ),
           
+          bsTooltip("variable2", "Change output variable",
+                    placement = "right", trigger = "hover"),
           
           selectInput(
             "color",
@@ -74,6 +79,13 @@ ui <- fluidPage(
             value = 0.1
           ),
           
+          sliderInput(
+            "dotSize",
+            "Set Scatterplot dot size:",
+            min = 0.5,
+            max = 6,
+            value = 1.5
+          ),
           
           checkboxInput(
             "namesCheckbox",
@@ -81,10 +93,20 @@ ui <- fluidPage(
             value = TRUE
           ),
           
+          
           bsTooltip("namesCheckbox", 
                     "Turn on/off names of cars next to their respective points",
                     placement = "right", trigger = "hover"),
           
+          checkboxInput(
+            "lineCheckbox",
+            "Regression Line on Scatterplot",
+            value = TRUE
+          ),
+          
+          bsTooltip("lineCheckbox", 
+                    "Toggle Linear Model Regression Line for scatterplot",
+                    placement = "right", trigger = "hover"),
           
           checkboxInput(
           "sumStatsCheckbox",
@@ -122,21 +144,37 @@ server <- function(input, output) {
         if (input$plotType == "Scatter Plot") {
           
           if (input$namesCheckbox == TRUE) { 
-            
-            ggplot(selectedData, aes_string(x = input$variable1, y = input$variable2)) +
-              geom_point(color = input$color, size = 1.5) +
-              labs(title = paste("Scatter Plot of", input$variable1, "and", input$variable2),
-                   x = input$variable1,
-                   y = input$variable2) + 
-              geom_text(aes(label = rownames(selectedData)), vjust = 1.5, check_overlap = TRUE, size = 3)
+            if (input$lineCheckbox == TRUE) {
+              ggplot(selectedData, aes_string(x = input$variable1, y = input$variable2)) +
+                geom_point(color = input$color, size = input$dotSize) + geom_smooth(method = "lm", se = TRUE) +
+                labs(title = paste("Scatter Plot of", input$variable1, "and", input$variable2),
+                     x = input$variable1,
+                     y = input$variable2) + 
+                geom_text(aes(label = rownames(selectedData)), vjust = 1.5, check_overlap = TRUE, size = 3)
+            } else {
+              ggplot(selectedData, aes_string(x = input$variable1, y = input$variable2)) +
+                geom_point(color = input$color, size = input$dotSize) + 
+                labs(title = paste("Scatter Plot of", input$variable1, "and", input$variable2),
+                     x = input$variable1,
+                     y = input$variable2) + 
+                geom_text(aes(label = rownames(selectedData)), vjust = 1.5, check_overlap = TRUE, size = 3)
+            }
           } 
           
           else {
-            ggplot(selectedData, aes_string(x = input$variable1, y = input$variable2)) +
-              geom_point(color = input$color, size = 1.5) +
-              labs(title = paste("Scatter Plot of", input$variable1, "and", input$variable2),
-                   x = input$variable1,
-                   y = input$variable2)
+            if (input$lineCheckbox == TRUE) {
+              ggplot(selectedData, aes_string(x = input$variable1, y = input$variable2)) +
+                geom_point(color = input$color, input$dotSize) + geom_smooth(method = "lm", se = TRUE) +
+                labs(title = paste("Scatter Plot of", input$variable1, "and", input$variable2),
+                     x = input$variable1,
+                     y = input$variable2)
+            } else {
+              ggplot(selectedData, aes_string(x = input$variable1, y = input$variable2)) +
+                geom_point(color = input$color, input$dotSize) + 
+                labs(title = paste("Scatter Plot of", input$variable1, "and", input$variable2),
+                     x = input$variable1,
+                     y = input$variable2) 
+            }
           }
         } 
         
