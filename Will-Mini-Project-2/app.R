@@ -11,6 +11,8 @@ library(shiny)
 library(ggplot2)
 library(corrplot)
 library(tidyverse)
+library(bslib)
+library(shinyBS)
 data("mtcars")
 
 # Define UI for application that draws a histogram
@@ -22,13 +24,17 @@ ui <- fluidPage(
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
+         
           selectInput(
             "plotType",
             "Select Plot Type:",
             choices = c("Scatter Plot", "Bar Graph",
                         "Box Plot", "Correlation Plot"),
             selected = 1
-          ),
+            ),
+          
+          bsTooltip("plotType", "Choose the type of plot to display",
+                    placement = "right", trigger = "hover"),
           
           selectInput(
             "variable1",
@@ -70,8 +76,11 @@ ui <- fluidPage(
             "sumStatsCheckbox",
             "Show Summary Statistics for Current Variables",
             value = TRUE
-          )
+          ),
           
+       bsTooltip("sumStatsCheckbox", 
+                  "Click to display the summary function output",
+                  placement = "right", trigger = "hover")
           
     ),
 
@@ -144,6 +153,7 @@ server <- function(input, output) {
         summary(mtcars[c(input$variable1,input$variable2)])
       }
     })
+    
 }
 
 # Run the application 
