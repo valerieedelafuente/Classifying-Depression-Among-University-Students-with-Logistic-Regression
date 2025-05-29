@@ -99,6 +99,7 @@ library(readr)
 library(tidyverse)
 library(naniar)
 library(janitor)
+#setwd("~/Documents/PSTAT 100/finalproject/PSTAT-100-Project")
 
 # Load in the data
 depression_data <- read.csv("data/student_depression_dataset.csv")
