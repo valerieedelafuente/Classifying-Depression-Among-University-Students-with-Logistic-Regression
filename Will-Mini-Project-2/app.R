@@ -36,6 +36,7 @@ ui <- fluidPage(
           bsTooltip("plotType", "Choose the type of plot to display",
                     placement = "right", trigger = "hover"),
           
+          
           selectInput(
             "variable1",
             "Select X-axis Variable:",
@@ -50,6 +51,7 @@ ui <- fluidPage(
             selected = 1
           ),
           
+          
           selectInput(
             "color",
             "Select Plot Color",
@@ -57,6 +59,12 @@ ui <- fluidPage(
                         Orange = "orange", Black = "black", White = "white"),
             selected = 1
           ),
+          
+          bsTooltip("color", 
+                    "Use to change the fill color of plots",
+                    placement = "right", trigger = "hover"),
+          
+          
           
           sliderInput(
             "barWidth",
@@ -66,23 +74,30 @@ ui <- fluidPage(
             value = 0.1
           ),
           
+          
           checkboxInput(
             "namesCheckbox",
-            "Show Car Names on Scatterplot",
+            "Car Names on Scatterplot",
             value = TRUE
           ),
+          
+          bsTooltip("namesCheckbox", 
+                    "Turn on/off names of cars next to their respective points",
+                    placement = "right", trigger = "hover"),
+          
           
           checkboxInput(
-            "sumStatsCheckbox",
-            "Show Summary Statistics for Current Variables",
-            value = TRUE
+          "sumStatsCheckbox",
+          "Summary Statistics for Current Variables",
+          value = TRUE
           ),
           
-       bsTooltip("sumStatsCheckbox", 
-                  "Click to display the summary function output",
+          bsTooltip("sumStatsCheckbox", 
+                  "Click to turn on/off summary function output for both variables",
                   placement = "right", trigger = "hover")
           
-    ),
+          
+      ),
 
         # Show a plot of the generated distribution
         mainPanel(
