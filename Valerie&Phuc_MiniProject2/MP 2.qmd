@@ -1,0 +1,125 @@
+---
+title: 'Mini Project 2'
+subtitle: "PSTAT100: Data Science Concepts and Analysis" 
+
+author: "Instructor: Ali Abuzaid"
+format: 
+ pdf:
+    code-fold: true
+    code-line-numbers: true
+    code-copy: true
+    code-tools: true
+    self-contained: true
+    toc: false
+    toc-location: left
+    number-sections: true
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message =  FALSE)
+knitr::opts_chunk$set(warning =  FALSE)
+knitr::opts_chunk$set(error =  FALSE)
+bfcolor <- function(x, color) {
+  if (knitr::is_latex_output()) {
+    sprintf("\\textcolor{%s}{\\textbf{%s}}", color, x)
+  } else if (knitr::is_html_output()) {
+    sprintf("<span style='color: %s;'><b>%s</b></span>", color, x)
+  } else x
+}
+```
+
+
+:::callout
+<div style="text-align: center">
+<span style="color: blue;"> **STUDENT NAME **</span> 
+</div>
+- PHUC Lu    (pdlu)
+- STUDENT 2    (NetID 2)
+
+:::
+
+:::{.callout-tip}
+# Instructions
+
+* This mini project is designed to give you practical experience with real-world data using R and Shiny. You’ll create an interactive web application that allows users to explore and visualize a dataset.
+
+* Work in groups of **2 students** from the same discussion section.
+* Individual submissions will not be accepted.
+
+* * Please use the provided `MP 2.qmd` file to type your Documentation and Presentation and submit it as a PDF file. You can utilize `RStudio`for this purpose. For guidance, refer to the [Tutorial: Hello, Quarto](https://quarto.org/docs/get-started/hello/rstudio.html)).
+
+
+* Please submit a `.zip` file that includes:
+
+Your `app.R` file (fully working Shiny app).
+
+A short project report (PDF).
+
+
+**Reminder**: If your app fails to open or the .zip is incorrect, you will receive a score of **ZERO**. Test everything before submission.
+
+:::
+
+:::{.callout-caution}
+# Due Date
+**Due Date:** Sunday, June 1, 2025, 11:59 PM
+:::
+
+
+## 2 Tasks:
+
+### 2.1.1: Data Loading:
+
+```{r}
+library(tidyverse)
+data(infert)
+```
+
+| **Variable**  | **Description**   | **Value** |
+|---------------|------------------ |-----------|
+| education | years of education | 0–5 years, 6–11 years, 12+ years |
+| age | age in years | 22-24 |
+| parity | number of prior live births | 1-6 |
+| induced | number of prior induced abortions | 0, 1, 2 or more |
+|case | case status | case, control |
+| spontaneous | number of prior spontaneous abortions | 0, 1, 2 or more |
+| stratum | id for each matched set or group | 1–83 |
+| pooled.stratum | represent a group or broader classification of strata (may be used for conditional logistic regression) | 1 - 63 |
+
+### 2.1.2: Preparation:
+
+```{r}
+infert %>% head()
+```
+
+```{r}
+library(stringr)
+# remove "yrs" from education values.
+infert_ds <- infert %>% mutate(education = str_remove(education, "yrs"))
+infert_ds %>% head()
+```
+
+```{r}
+summary(infert_ds)
+```
+```{r}
+str(infert_ds)
+```
+
+
+# Documentation and Presentation
+
+## App Purpose
+
+----
+
+## How it Works
+
+----
+
+## Insights
+ 
+----
+ 
+## Reflections
+
+---
