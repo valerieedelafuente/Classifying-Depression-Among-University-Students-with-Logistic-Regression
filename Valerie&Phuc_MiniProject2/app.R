@@ -162,7 +162,7 @@ server <- function(input, output, session) {
     summary(filtered_data()[[input$variable]])
   })
   
-  # Grouped summary (user-selected grouping factor)
+  # Grouped summary
   output$groupedSummary <- renderTable({
     df <- filtered_data()
     group_var <- input$groupBy
