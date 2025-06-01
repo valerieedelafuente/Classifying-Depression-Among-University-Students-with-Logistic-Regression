@@ -15,7 +15,7 @@ Our app's primary function is as a tool in order to visualize and better underst
 
 # How it Works:
 
-Our app presents an interactive user interface with the option to display 4 different visual graphs including scatter plot, box plot, bar graph, and correlation plot. The user is able to select two variables to display on the graph from 11 options. In addition the user has several options to customize how the visuals are displayed such as plot color, adjusting the bar graph's width and scatter plot dot size, and whether or not to display the car names and regression line on the scatter plot. Lastly our user can decide whether or not to show the summary statistics of the two variables selected.
+Our app presents an interactive user interface with the option to display 4 different visual graphs including scatter plot, box plot, bar graph, and correlation plot. The user is able to select two variables to display on the graph from 11 options. In addition, the user has several options to customize how the visuals are displayed such as plot color, adjusting the bar graph's width and scatter plot dot size, and whether or not to display the car names and regression line on the scatter plot. Lastly our user can decide whether or not to show the summary statistics of the two variables selected.
 
 # Insights:
 
