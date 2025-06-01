@@ -40,6 +40,8 @@ ui <- fluidPage(
       
       conditionalPanel(
         condition = "input.plotType == 'Boxplot'",
+        selectInput("boxplotGroup", "View Boxplot Across:",
+                    choices = c("CaseStatus", "Education")),
         checkboxInput("showJitter", "Add Jittered Data Points", value = FALSE)
       ),
       
@@ -129,9 +131,11 @@ server <- function(input, output, session) {
       p
       
     } else if (input$plotType == "Boxplot") {
-      p <- ggplot(df, aes_string(y = var)) +
+      group_var <- input$boxplotGroup
+      
+      p <- ggplot(df, aes_string(x = group_var, y = var)) +
         geom_boxplot(fill = "royalblue") +
-        labs(title = paste("Boxplot of", var), y = var) +
+        labs(title = paste("Boxplot of", var, "across", group_var), x = group_var, y = var) +
         theme_minimal()
       
       if (input$showJitter) {
@@ -188,6 +192,7 @@ server <- function(input, output, session) {
 
 # Run the app
 shinyApp(ui = ui, server = server)
+
 
 
 
