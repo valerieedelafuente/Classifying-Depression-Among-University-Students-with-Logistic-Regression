@@ -14,6 +14,7 @@ format:
     toc-location: left
     number-sections: true
 ---
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(message =  FALSE)
 knitr::opts_chunk$set(warning =  FALSE)
@@ -27,43 +28,40 @@ bfcolor <- function(x, color) {
 }
 ```
 
-
-:::callout
-<div style="text-align: center">
-<span style="color: blue;"> **STUDENT NAME **</span> 
-</div>
-- PHUC Lu    (pdlu)
-- STUDENT 2    (NetID 2)
-
+:::: callout
+::: {style="text-align: center"}
+[**STUDENT NAME**]{style="color: blue;"}
 :::
 
-:::{.callout-tip}
+-   Phuc Lu (pdlu)
+-   Valerie De La Fuente (valeriedelafuente)
+::::
+
+::: callout-tip
 # Instructions
 
-* This mini project is designed to give you practical experience with real-world data using R and Shiny. You’ll create an interactive web application that allows users to explore and visualize a dataset.
+-   This mini project is designed to give you practical experience with real-world data using R and Shiny. You’ll create an interactive web application that allows users to explore and visualize a dataset.
 
-* Work in groups of **2 students** from the same discussion section.
-* Individual submissions will not be accepted.
+-   Work in groups of **2 students** from the same discussion section.
 
-* * Please use the provided `MP 2.qmd` file to type your Documentation and Presentation and submit it as a PDF file. You can utilize `RStudio`for this purpose. For guidance, refer to the [Tutorial: Hello, Quarto](https://quarto.org/docs/get-started/hello/rstudio.html)).
+-   Individual submissions will not be accepted.
 
+-   Please use the provided `MP 2.qmd` file to type your Documentation and Presentation and submit it as a PDF file. You can utilize `RStudio`for this purpose. For guidance, refer to the [Tutorial: Hello, Quarto](https://quarto.org/docs/get-started/hello/rstudio.html)).
 
-* Please submit a `.zip` file that includes:
+-   Please submit a `.zip` file that includes:
 
 Your `app.R` file (fully working Shiny app).
 
 A short project report (PDF).
 
-
 **Reminder**: If your app fails to open or the .zip is incorrect, you will receive a score of **ZERO**. Test everything before submission.
-
 :::
 
-:::{.callout-caution}
+::: callout-caution
 # Due Date
+
 **Due Date:** Sunday, June 1, 2025, 11:59 PM
 :::
-
 
 ## 2 Tasks:
 
@@ -74,18 +72,18 @@ library(tidyverse)
 data(infert)
 ```
 
-| **Variable**  | **Description**   | **Value** |
-|---------------|------------------ |-----------|
+| **Variable** | **Description** | **Value** |
+|-------------------------|----------------------------|-------------------|
 | education | years of education | 0–5 years, 6–11 years, 12+ years |
 | age | age in years | 22-24 |
 | parity | number of prior live births | 1-6 |
 | induced | number of prior induced abortions | 0, 1, 2 or more |
-|case | case status | case, control |
+| case | case status | case, control |
 | spontaneous | number of prior spontaneous abortions | 0, 1, 2 or more |
 | stratum | id for each matched set or group | 1–83 |
 | pooled.stratum | represent a group or broader classification of strata (may be used for conditional logistic regression) | 1 - 63 |
 
-### 2.1.2: Preparation:
+### 2.1.2: Data Preparation:
 
 ```{r}
 infert %>% head()
@@ -94,32 +92,49 @@ infert %>% head()
 ```{r}
 library(stringr)
 # remove "yrs" from education values.
-infert_ds <- infert %>% mutate(education = str_remove(education, "yrs"))
+infert_ds <- infert %>% mutate(
+    education = factor(education),
+    case = factor(case, levels = c(0, 1), labels = c("control", "case"))
+  )
 infert_ds %>% head()
 ```
 
 ```{r}
 summary(infert_ds)
 ```
+
 ```{r}
 str(infert_ds)
 ```
 
+### 2.2 Shiny App Development
+
+**User Interface (UI):**
+
+```{r, eval = FALSE}
+
+```
+
+**Server Logic:**
+
+```{r, eval = FALSE}
+
+```
 
 # Documentation and Presentation
 
 ## App Purpose
 
-----
+------------------------------------------------------------------------
 
 ## How it Works
 
-----
+------------------------------------------------------------------------
 
 ## Insights
- 
-----
- 
+
+------------------------------------------------------------------------
+
 ## Reflections
 
----
+------------------------------------------------------------------------
