@@ -18,8 +18,17 @@ infert_ds <- infert %>%
   ) %>%
   mutate(
     Education = factor(str_remove(Education, "yrs"), levels = c("0-5", "6-11", "12+")),
-    CaseStatus = factor(CaseStatus, levels = c(0, 1), labels = c("control", "case"))
+    CaseStatus = factor(CaseStatus, levels = c(0, 1), labels = c("control", "case")),
+    Parity = factor(Parity),
+    InducedAbortions = factor(InducedAbortions),
+    SpontaneousAbortions = factor(SpontaneousAbortions),
+    StratumID = factor(StratumID),
+    PooledStratumID = factor(PooledStratumID)
   )
+
+# Identify factor variables dynamically
+factor_vars <- names(infert_ds)[sapply(infert_ds, is.factor)]
+numeric_vars <- names(infert_ds)[sapply(infert_ds, is.numeric)]
 
 # Define UI
 ui <- fluidPage(
@@ -34,14 +43,14 @@ ui <- fluidPage(
       
       conditionalPanel(
         condition = "input.plotType == 'Histogram'",
-        sliderInput("bins", "Number of Bins:", min = 5, max = 50, value = 5),
+        sliderInput("bins", "Number of Bins:", min = 5, max = 50, value = 10),
         checkboxInput("showDensity", "Overlay Density Curve", value = FALSE)
       ),
       
       conditionalPanel(
         condition = "input.plotType == 'Boxplot'",
         selectInput("boxplotGroup", "View Boxplot Across:",
-                    choices = c("CaseStatus", "Education")),
+                    choices = factor_vars),
         checkboxInput("showJitter", "Add Jittered Data Points", value = FALSE)
       ),
       
@@ -51,24 +60,9 @@ ui <- fluidPage(
       sliderInput("ageFilter", "Age Range:",
                   min(infert_ds$Age), max(infert_ds$Age),
                   value = c(min(infert_ds$Age), max(infert_ds$Age))),
-      sliderInput("parityFilter", "Parity Range:",
-                  min(infert_ds$Parity), max(infert_ds$Parity),
-                  value = c(min(infert_ds$Parity), max(infert_ds$Parity))),
-      sliderInput("inducedFilter", "Induced Abortions:",
-                  min(infert_ds$InducedAbortions), max(infert_ds$InducedAbortions),
-                  value = c(min(infert_ds$InducedAbortions), max(infert_ds$InducedAbortions))),
-      sliderInput("spontaneousFilter", "Spontaneous Abortions:",
-                  min(infert_ds$SpontaneousAbortions), max(infert_ds$SpontaneousAbortions),
-                  value = c(min(infert_ds$SpontaneousAbortions), max(infert_ds$SpontaneousAbortions))),
-      sliderInput("stratumFilter", "StratumID:",
-                  min(infert_ds$StratumID), max(infert_ds$StratumID),
-                  value = c(min(infert_ds$StratumID), max(infert_ds$StratumID))),
-      sliderInput("pooledStratumFilter", "Pooled StratumID:",
-                  min(infert_ds$PooledStratumID), max(infert_ds$PooledStratumID),
-                  value = c(min(infert_ds$PooledStratumID), max(infert_ds$PooledStratumID))),
       
       selectInput("groupBy", "Group Summary By:",
-                  choices = c("CaseStatus", "Education"))
+                  choices = factor_vars)
     ),
     
     mainPanel(
@@ -90,9 +84,7 @@ server <- function(input, output, session) {
     req(input$variable)
     var <- input$variable
     
-    if (var %in% c("StratumID", "PooledStratumID")) {
-      selectInput("plotType", "Select Plot Type:", choices = c("Histogram"))
-    } else if (is.numeric(infert_ds[[var]])) {
+    if (is.numeric(infert_ds[[var]])) {
       selectInput("plotType", "Select Plot Type:", choices = c("Histogram", "Boxplot"))
     } else {
       selectInput("plotType", "Select Plot Type:", choices = c("Bar Chart"))
@@ -103,12 +95,7 @@ server <- function(input, output, session) {
   filtered_data <- reactive({
     infert_ds %>%
       filter(
-        Age >= input$ageFilter[1], Age <= input$ageFilter[2],
-        Parity >= input$parityFilter[1], Parity <= input$parityFilter[2],
-        InducedAbortions >= input$inducedFilter[1], InducedAbortions <= input$inducedFilter[2],
-        SpontaneousAbortions >= input$spontaneousFilter[1], SpontaneousAbortions <= input$spontaneousFilter[2],
-        StratumID >= input$stratumFilter[1], StratumID <= input$stratumFilter[2],
-        PooledStratumID >= input$pooledStratumFilter[1], PooledStratumID <= input$pooledStratumFilter[2]
+        Age >= input$ageFilter[1], Age <= input$ageFilter[2]
       )
   })
   
@@ -155,12 +142,17 @@ server <- function(input, output, session) {
   # Show hover info
   output$hoverInfo <- renderPrint({
     hover <- input$plot_hover
-    if (!is.null(hover)) {
-      cat("Hovered at:\n")
-      cat("x:", round(hover$x, 2), "\n")
-      cat("y:", round(hover$y, 2), "\n")
+    
+    if (input$plotType == "Histogram" || input$plotType == "Boxplot") {
+      if (!is.null(hover)) {
+        cat("Hovered at:\n")
+        cat("x:", round(hover$x, 2), "\n")
+        cat("y:", round(hover$y, 2), "\n")
+      } else {
+        cat("Hover over the plot to see coordinates.")
+      }
     } else {
-      cat("Hover over the plot to see coordinates.")
+      cat("Hover info disabled for bar charts (categorical x-axis).")
     }
   })
   
@@ -170,28 +162,25 @@ server <- function(input, output, session) {
     summary(filtered_data()[[input$variable]])
   })
   
-  # Grouped summary
+  # Grouped summary (user-selected grouping factor)
   output$groupedSummary <- renderTable({
     df <- filtered_data()
+    group_var <- input$groupBy
     
     if (!input$includeNA) {
-      df <- df %>% drop_na(CaseStatus, Education)
+      df <- df %>% drop_na(all_of(group_var))
     }
     
-    if (input$groupBy == "CaseStatus") {
-      df %>%
-        group_by(CaseStatus) %>%
-        summarise(across(where(is.numeric), mean, na.rm = TRUE), .groups = "drop")
-    } else {
-      df %>%
-        group_by(Education) %>%
-        summarise(across(where(is.numeric), mean, na.rm = TRUE), .groups = "drop")
-    }
+    df %>%
+      group_by(across(all_of(group_var))) %>%
+      summarise(across(where(is.numeric), mean, na.rm = TRUE), .groups = "drop")
   }, rownames = TRUE)
 }
 
 # Run the app
 shinyApp(ui = ui, server = server)
+
+
 
 
 
