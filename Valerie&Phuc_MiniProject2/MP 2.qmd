@@ -289,16 +289,20 @@ shinyApp(ui = ui, server = server)
 
 ## App Purpose
 
-------------------------------------------------------------------------
+The purpose of this app is make it easy for the users to understand the infertility data set without having to do coding on their own. All it takes is point, click, and drag to get beautiful graphs or summary statistics of the data.
 
 ## How it Works
 
-------------------------------------------------------------------------
+The select variable feature allow the users to select one of eight variables from the `infert` data set to analyze. The app will automatically select a graph that works with the variable of interest. The user can also adjust the number of bins there are in the graph. If a boxplox is chosen, the user can select another variable to compare with. The user can also add jitters to the boxplot, as well include missing (`NA`) values in the boxplot. The user can alo group the summary by a certain variable as well. The grouped summary will be displayed at the very bottom of the page. On the graphs, the user can hover their mouse over the graph to view the coordinates (x, y) for more precise information. Below the graph feature are summary statistics. These include the minimum, 1st quartile, median, mean, 3rd quartile, and maximum value. 
 
 ## Insights
 
-------------------------------------------------------------------------
+The initial questions that this data set tries to answer is what factors are associated with secondary infertility in women. Two of the main components to this questions are spontaneous versus induced abortions. Spontaneous abortions is abortion due to natural causes, while induced abortion is to deliberately terminate the pregnancy. From the data gathered in this data set, the distribution of spontaneous and induced abortions are similar, in that the majority of women in this data reported to having 0 of either types of abortions. On the other hand, about 1/3 of the total women in the data set reported having 2 abortions in the respective type of abortion. 
+
+It's valuable look at the distribution of the age of women in this data set. The surveyed women are from 20 to 45 years old. The distribution of the age variable has center at around 28-30 years old and follow as a bell shape with heavier tail on both sides. Another interesting variable is parity, which is the number of prior live births. This variable has a negative slope where the majority of women reported to having 1 live birth and as the number of live birth increase, the number of women reported having said number of live births decreases.
 
 ## Reflections
 
-------------------------------------------------------------------------
+Since one person has more experienced with Rshiny, rather than having the person learn RShiny entirely, we decided to just let the RShiny expert person code the app with all of its features, while the less experienced person handle other tasks. The second person is very confident in writing, so they're tasked with writing and testing the app. Their job is to tinker with the app to figure out and document how the app works, how easy the app is to use, and to catch any potential app quirks from the user experience. This division of tasks is more time efficient, minimizes friction, and lets both people focus on tasks that best suits their expertise.
+
+As of now, this app cannot compare two variables to learn about their relationships. This feature can be implemented in a future version of this app. 
