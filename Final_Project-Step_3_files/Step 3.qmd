@@ -13,8 +13,10 @@ library(janitor)
 #setwd("/Documents/PSTAT 100/finalproject/PSTAT-100-Project/")
 
 # Load in the data
-depression_data <- read.csv("/data/student_depression_dataset.csv")
+depression_data <- read.csv("student_depression_dataset.csv")
+```
 
+```{r}
 # Fix column names
 depression_data <- depression_data %>% 
   clean_names() %>%
