@@ -142,6 +142,7 @@ degree_levels <- c(
   "PhD",
   "Other"
 )
+
 depression_data <- depression_data %>%
   mutate(degree = factor(degree, levels = degree_levels, ordered = TRUE))
 
@@ -169,6 +170,19 @@ depression_data$depression <- factor(depression_data$depression)
 ## Hypothesis 1: Will
 
 Students with moderate to healthy dietary habits will have lower rates of depression compared to students with unhealthy dietary habits
+
+```{r}
+dietHabitsModel <- glm(depression ~ dietary_habits - 1, data = depression_data,
+                       family = 'binomial')
+
+summary(dietHabitsModel)
+```
+
+We see statistically significant results from our logistic regression model that every level of dietary habit besides "Other" has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by almost 20%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 25 and 88 percent respectively. This is a very strong result to start with, but we will continue trying models to see if they agree with this logistic regression model:
+
+```{r}
+
+```
 
 ## Hypothesis 2: Matthew
 
