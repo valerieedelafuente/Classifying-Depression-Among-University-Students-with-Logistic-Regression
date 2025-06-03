@@ -171,17 +171,17 @@ depression_data$depression <- factor(depression_data$depression)
 
 ## Hypothesis 1: Will
 
-Students with moderate to healthy dietary habits will have lower rates of depression compared to students with unhealthy dietary habits
+Our first hypothesis we want to test is that students with moderate to healthy dietary habits will have lower rates of depression than students with unhealthy dietary habits. We will fit a basic logistic regression model to predict the binary outcome variable, "depression", using our categorical variable "dietary_habits" as a predictor. The results of the model are summarized in the following table:
 
 ```{r, echo=FALSE}
 dietHabitsModel <- glm(depression ~ dietary_habits - 1, data = depression_data,
                        family = 'binomial')
 
 logModelSum <- summary(dietHabitsModel)
-kable(logModelSum$coefficients)
+kable(logModelSum$coefficients, format = 'markdown', digits = 42)
 ```
 
-We see statistically significant results from our basic logistic regression model with just dietary habits as a predictor. Every level of dietary habit besides "Other" has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by almost 20%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 25 and 88 percent respectively. This is a very strong result to start with, but we should
+We see statistically significant results from our basic logistic regression model with just dietary habits as a predictor. Every level of dietary habit besides "Other" has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by about 18.5%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 24 and 88 percent respectively. This is a very strong result to start with, but we should
 
 ```{r, echo=FALSE}
 
