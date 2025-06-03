@@ -12,6 +12,7 @@ library(naniar)
 library(janitor)
 library(knitr)
 library(rmarkdown)
+library(car)
 #setwd("/Documents/PSTAT 100/finalproject/PSTAT-100-Project/")
 
 # Load in the data
@@ -175,17 +176,22 @@ Our first hypothesis we want to test is that students with moderate to healthy d
 
 ```{r, echo=FALSE}
 dietHabitsModel <- glm(depression ~ dietary_habits - 1, data = depression_data,
-                       family = 'binomial')
+                       family = binomial(link = 'logit'))
 
 logModelSum <- summary(dietHabitsModel)
 kable(logModelSum$coefficients, format = 'markdown', digits = 42)
 ```
 
-We see statistically significant results from our basic logistic regression model with just dietary habits as a predictor. Every level of dietary habit besides "Other" has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by about 18.5%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 24 and 88 percent respectively. This is a very strong result to start with, but we should
+We see statistically significant results from our basic logistic regression model with just dietary habits as a predictor. Every level of dietary habit besides "Other" has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by about 18.5%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 24 and 88 percent respectively. This is a very strong result to start with, but we should check our model results in other ways as well.
+
+We will first check to make sure the Dietary Habits categorical predictor is significant in predicting the presence of depression overall rather than just by the level of the variable. We will use the "anova" function to perform a Chi-Squared likelihood ratio test with a null hypothesis that the null model without Dietary Habits is sufficient in predicting depression, and an alternative hypothesis that Dietary Habits is significant to the model in terms of lowering the model's residual deviance. The results of the anova are the following:
 
 ```{r, echo=FALSE}
-
+logModANOVA <- anova(dietHabitsModel)
+kable(logModANOVA, digits = 1000)
 ```
+
+This table shows us that when added to the null model, the Dietary Habits predictor reduced the model's residual deviance so greatly that the p-value for our likelihood ratio test is too small for R to display it. The true p-value is less than 2.2 \* 10\^-16, which is extremely tiny and reasonably rounded to 0. With this similarly significant result to the model results earlier, we can conclude that the Dietary Habits predictor as a whole is significant in predicting the presence of depression.
 
 ## Hypothesis 2: Matthew
 
