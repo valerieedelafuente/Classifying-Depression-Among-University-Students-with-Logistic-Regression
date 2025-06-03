@@ -4,19 +4,20 @@ format: pdf
 editor: visual
 ---
 
-```{r}
+```{r, include=FALSE}
 # Load necessary packages
 library(readr)
 library(tidyverse)
 library(naniar)
 library(janitor)
+library(kableExtra)
 #setwd("/Documents/PSTAT 100/finalproject/PSTAT-100-Project/")
 
 # Load in the data
 depression_data <- read.csv("student_depression_dataset.csv")
 ```
 
-```{r}
+```{r, include=FALSE}
 # Fix column names
 depression_data <- depression_data %>% 
   clean_names() %>%
@@ -171,16 +172,17 @@ depression_data$depression <- factor(depression_data$depression)
 
 Students with moderate to healthy dietary habits will have lower rates of depression compared to students with unhealthy dietary habits
 
-```{r}
+```{r, echo=FALSE}
 dietHabitsModel <- glm(depression ~ dietary_habits - 1, data = depression_data,
                        family = 'binomial')
 
-summary(dietHabitsModel)
+logModelSum <- summary(dietHabitsModel)
+kable(logModelSum$coefficients)
 ```
 
-We see statistically significant results from our logistic regression model that every level of dietary habit besides "Other" has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by almost 20%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 25 and 88 percent respectively. This is a very strong result to start with, but we will continue trying models to see if they agree with this logistic regression model:
+We see statistically significant results from our basic logistic regression model with just dietary habits as a predictor. Every level of dietary habit besides "Other" has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by almost 20%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 25 and 88 percent respectively. This is a very strong result to start with, but we will continue trying models to see if they agree with this logistic regression model:
 
-```{r}
+```{r, echo=FALSE}
 
 ```
 
