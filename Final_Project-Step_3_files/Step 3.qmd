@@ -10,7 +10,8 @@ library(readr)
 library(tidyverse)
 library(naniar)
 library(janitor)
-library(kableExtra)
+library(knitr)
+library(rmarkdown)
 #setwd("/Documents/PSTAT 100/finalproject/PSTAT-100-Project/")
 
 # Load in the data
@@ -180,7 +181,7 @@ logModelSum <- summary(dietHabitsModel)
 kable(logModelSum$coefficients)
 ```
 
-We see statistically significant results from our basic logistic regression model with just dietary habits as a predictor. Every level of dietary habit besides "Other" has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by almost 20%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 25 and 88 percent respectively. This is a very strong result to start with, but we will continue trying models to see if they agree with this logistic regression model:
+We see statistically significant results from our basic logistic regression model with just dietary habits as a predictor. Every level of dietary habit besides "Other" has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by almost 20%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 25 and 88 percent respectively. This is a very strong result to start with, but we should
 
 ```{r, echo=FALSE}
 
