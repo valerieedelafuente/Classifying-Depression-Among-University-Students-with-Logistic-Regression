@@ -4,23 +4,34 @@ format: pdf
 editor: visual
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
 ```{r}
-1 + 1
+# Load necessary packages
+library(readr)
+library(tidyverse)
+library(naniar)
+library(janitor)
+#setwd("OneDrive/Documents/PSTAT 100/finalproject/PSTAT-100-Project")
+
+# Load in the data
+depression_data <- read.csv("~/data/student_depression_dataset.csv")
 ```
 
-You can add options to executable code like this
+## Abstract
 
-```{r}
-#| echo: false
-2 * 2
-```
+## Introduction
 
-The `echo: false` option disables the printing of code (only output is displayed).
+## Hypothesis 1: Will
+
+Students with moderate to healthy dietary habits will have lower rates of depression compared to students with unhealthy dietary habits
+
+## Hypothesis 2: Matthew
+
+Students who average more sleep per night will have lower rates of depression compared to students who average less.
+
+## Hypothesis 3: Hayden
+
+Students with the highest collective reported stressors (Academic Pressure + Work Pressure + Financial Stress) will have higher rates of depression compared to students with lower collective reported stressors.
+
+## Conclusion
+
+## Recommendations 

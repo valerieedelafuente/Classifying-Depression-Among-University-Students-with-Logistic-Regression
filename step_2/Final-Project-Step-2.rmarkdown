@@ -364,7 +364,7 @@ rating_var %>% summary()
 ```
 
 | Statistic | Academic Pressure | Work Pressure | Job Satisfaction | Study Satisfaction | Financial Stress |
-|------------|------------|------------|------------|------------|------------|
+|----|----|----|----|----|----|
 | Min. | 0.000 | 0.0000000 | 0.000000 | 0.000 | 1.00 |
 | 1st Qu. | 2.000 | 0.0000000 | 0.000000 | 2.000 | 2.00 |
 | Median | 3.000 | 0.0000000 | 0.000000 | 3.000 | 3.00 |
