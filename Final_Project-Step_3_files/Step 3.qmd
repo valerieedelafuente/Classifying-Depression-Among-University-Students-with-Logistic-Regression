@@ -172,7 +172,23 @@ depression_data$depression <- factor(depression_data$depression)
 
 ## Hypothesis 1: Will
 
-Our first hypothesis we want to test is that students with moderate to healthy dietary habits will have lower rates of depression than students with unhealthy dietary habits. We will fit a basic logistic regression model to predict the binary outcome variable, "depression", using our categorical variable "dietary_habits" as a predictor. The results of the model are summarized in the following table:
+Our first hypothesis we want to test is that students with moderate to healthy dietary habits will have lower rates of depression than students with unhealthy dietary habits. We will fit a basic logistic regression model to predict the binary outcome variable, "depression", using our categorical variable "dietary_habits" as a predictor.
+
+Before fitting our model, we should first fully understand the predictor we are working with as well as check some assumptions that need to be met for our model to function properly. Our predictor "Dietary Habits" is distributed as follows:
+
+```{r, echo=FALSE}
+kable(table(depression_data$dietary_habits), col.names = c("Habits", "Count"))
+```
+
+We have a slightly skewed distribution of responses between Healthy, Moderate, and Unhealthy dietary habits, as well as 12 observations that responded "Other". Because these 12 responses are a very small fraction of the overall data, we can remove these to simplify our model and our interpretations of it.
+
+```{r, echo=FALSE}
+depression_data <- depression_data %>% filter(
+  dietary_habits != "Other"
+)
+```
+
+The results of the model are summarized in the following table:
 
 ```{r, echo=FALSE}
 dietHabitsModel <- glm(depression ~ dietary_habits - 1, data = depression_data,
@@ -182,7 +198,7 @@ logModelSum <- summary(dietHabitsModel)
 kable(logModelSum$coefficients, format = 'markdown', digits = 42)
 ```
 
-We see statistically significant results from our basic logistic regression model with just dietary habits as a predictor. Every level of dietary habit besides "Other" has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by about 18.5%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 24 and 88 percent respectively. This is a very strong result to start with, but we should check our model results in other ways as well.
+We see statistically significant results from our basic logistic regression model with just dietary habits as a predictor. Every level of dietary habits has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by about 18.5%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 24 and 88 percent respectively. This is a very strong result to start with, but we should check our model results in other ways as well.
 
 We will first check to make sure the Dietary Habits categorical predictor is significant in predicting the presence of depression overall rather than just by the level of the variable. We will use the "anova" function to perform a Chi-Squared likelihood ratio test with a null hypothesis that the null model without Dietary Habits is sufficient in predicting depression, and an alternative hypothesis that Dietary Habits is significant to the model in terms of lowering the model's residual deviance. The results of the anova are the following:
 
