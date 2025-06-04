@@ -275,7 +275,7 @@ Before fitting our model, we should first fully understand the predictor we are 
 
 ```{r, echo=FALSE}
 
-# Step 1: Ensure depression is binary numeric
+# Ensure depression is binary numeric
 depression_data <- depression_data %>%
   mutate(
     depression_numeric = as.numeric(depression),  # "No" = 0, "Yes" = 1
@@ -297,15 +297,15 @@ As mentioned in the previous hypothesis, Logistic Regression models have a few a
 
 ```{r, echo=FALSE, message=FALSE}
 
-# Step 2: Fit logistic regression model
+# Fit logistic regression model
 logit_model <- glm(depression_numeric ~ total_stress, 
                    data = depression_data, 
                    family = binomial)
 
-# Step 2: Get predicted log-odds (logits)
+# Get predicted log-odds (logits)
 depression_data$logit <- predict(logit_model, type = "link")  # link = log-odds
 
-# Step 3: Plot logit vs total_stress
+# Plot logit vs total_stress
 ggplot(depression_data, aes(x = total_stress, y = logit)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method = "loess", color = "blue") +
@@ -359,7 +359,7 @@ anova_result <- anova(null_model, full_model, test = "Chisq")
 anova_df <- as.data.frame(anova_result)
 anova_df$Model <- rownames(anova_result)
 
-# Reorder columns if needed
+# Reorder columns 
 anova_df <- anova_df[, c("Model", "Df", "Deviance", "Resid. Df", "Resid. Dev", "Pr(>Chi)")]
 
 # Rename for clarity
@@ -379,34 +379,31 @@ This table shows us that when added to the null model, the Total Stressors predi
 Lastly we will check how accurate our model is at predicting the presence of depression using a Confusion Matrix. The Confusion Matrix will visualize the accuracy of our model in terms of true positive and negative rates in the diagonal cells, false positive rate in the bottom left cell (row 2, column 1), and false negative rate in the top right cell (row 1, col 2).
 
 ```{r, echo=FALSE}
-# Step 1: Fit the logistic regression model
-model <- glm(depression ~ total_stress, data = depression_data, family = binomial)
+# Predict probabilities
+predicted_prob <- predict(logit_model, type = "response")
 
-# Step 2: Predict probabilities
-predicted_prob <- predict(model, type = "response")
-
-# Step 3: Convert probabilities to binary class predictions
+# Convert probabilities to binary class predictions
 predicted_class <- ifelse(predicted_prob >= 0.5, "Yes", "No")
 
-# Step 4: Convert actual depression variable to "Yes"/"No" character labels
+# Convert actual depression variable to "Yes"/"No" character labels
 actual_class <- ifelse(depression_data$depression == 1 | depression_data$depression == "Yes", "Yes", "No")
 
-# Step 5: Convert both to factors with matching levels
+# Convert both to factors with matching levels
 predicted_class <- factor(predicted_class, levels = c("No", "Yes"))
 actual_class <- factor(actual_class, levels = c("No", "Yes"))
 
-# Step 6: Generate confusion matrix
+# Generate confusion matrix
 cm <- confusionMatrix(predicted_class, actual_class)
 
-# Step 7: Extract confusion matrix table and convert to data frame
+# Extract confusion matrix table and convert to data frame
 cm_table <- as.data.frame.matrix(cm$table)
 cm_table <- tibble::rownames_to_column(cm_table, var = "Prediction")
 
-# Step 8: Display confusion matrix with kable
+# Display confusion matrix with kable
 kable(cm_table, caption = "Confusion Matrix (Predicted vs Actual)",
       col.names = c("Prediction", "Actual: No", "Actual: Yes"))
 
-# Step 9: Create data frame of key performance metrics
+# Create data frame of key performance metrics
 metrics <- data.frame(
   Metric = c("Accuracy", "95% CI", "No Information Rate", 
              "P-Value [Acc > NIR]", "Kappa", "McNemar's Test P-Value"),
@@ -420,7 +417,7 @@ metrics <- data.frame(
   )
 )
 
-# Step 10: Display metrics table with kable
+# Display metrics table with kable
 kable(metrics, caption = "Model Performance Metrics from Confusion Matrix",
       col.names = c("Metric", "Value"))
 ```
