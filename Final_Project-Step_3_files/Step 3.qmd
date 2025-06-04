@@ -4,7 +4,7 @@ format: pdf
 editor: visual
 ---
 
-```{r, include=FALSE}
+```{r, include=FALSE, message=FALSE}
 # Load necessary packages
 library(readr)
 library(tidyverse)
@@ -13,6 +13,7 @@ library(janitor)
 library(knitr)
 library(rmarkdown)
 library(car)
+library(caret)
 #setwd("/Documents/PSTAT 100/finalproject/PSTAT-100-Project/")
 
 # Load in the data
@@ -240,6 +241,27 @@ kable(logModANOVA, digits = 1000)
 ```
 
 This table shows us that when added to the null model, the Dietary Habits predictor reduced the model's residual deviance so greatly that the p-value for our likelihood ratio test is too small for R to display it. The true p-value is less than 2.2 \* 10\^-16, which is extremely tiny and reasonably rounded to 0. With this similarly significant result to the model results earlier, we can conclude that the Dietary Habits predictor as a whole is significant in predicting the presence of depression.
+
+We can now check how accurate our model is at predicting the presence of depression using a Confusion Matrix. The Confusion Matrix will visualize the accuracy of our model in terms of true positive and negative rates in the diagonal cells, false positive rate in the bottom left cell (row 2, column 1), and false negative rate in the top right cell (row 1, col 2).
+
+```{r, echo=FALSE}
+pred_probs <- predict(dietHabitsModel, type = "response")
+
+pred_class <- ifelse(pred_probs > 0.5, 1, 0)
+
+pred_class <- factor(pred_class, levels = c(0, 1))
+actual <- factor(depression_data$depression, levels = c(0, 1))
+
+confMat <- confusionMatrix(pred_class, actual, positive = "1")
+
+accuracy <- confMat$overall[1]
+
+kable(confMat$table/(dim(depression_data)[1]), digits = 3)
+```
+
+Here we see our model has an accuracy of 0.61 or 61%, a false positive rate of 0.265 or 26.5%, and a false negative rate of 0.125 or 12.5%. This means our model with just Dietary Habits as a predictor is slightly better at predicting the presence of depression than a random guess.
+
+Despite the fact that this model cannot predict the presence of depression with an impressive accuracy, the results of our model fit and surrounding hypothesis tests lead us to fail to reject our hypothesis that students with moderate to healthy dietary habits will have lower rates of depression than students with unhealthy dietary habits.
 
 ## Hypothesis 2: Matthew
 
