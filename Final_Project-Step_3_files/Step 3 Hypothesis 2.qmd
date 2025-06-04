@@ -27,7 +27,7 @@ Based on the research question, hypothesis, and the characteristics of the data 
 
 #### Data Processing
 
-* **Data Cleaning**: In order to properly clean our data to test this hypothesis we must check to see if there are any missing values for both the outcome variable (`Depression`) and our chosen predictor variable (`Sleep Duration`): 
+-   **Data Cleaning**: In order to properly clean our data to test this hypothesis we must check to see if there are any missing values for both the outcome variable (`Depression`) and our chosen predictor variable (`Sleep Duration`):
 
 ```{r,results='asis'}
 #| echo: false
@@ -46,7 +46,7 @@ missing_table <- depression %>%
 kable(missing_table,caption="NA Values")
 ```
 
-* After aggregating the missing values data for both the `Depression` and `Sleep Duration` variables, we found that there are no `NA` values assigned to any observations for the respective variables. However this does not mean that there are no missing values present in the data. In order to investigate further we need to look at a frequency table of both variables:
+-   After aggregating the missing values data for both the `Depression` and `Sleep Duration` variables, we found that there are no `NA` values assigned to any observations for the respective variables. However this does not mean that there are no missing values present in the data. In order to investigate further we need to look at a frequency table of both variables:
 
 ```{r,results='asis'}
 #| echo: false
@@ -60,14 +60,13 @@ kable(sleeptable,caption="Sleep Frequency")
 kable(depressiontable,caption="Depression Frequency")
 ```
 
-* As evident by the frequency tables, there are no missing values for the `Depression` variable in the data set, however there are 18 instances of `Others` being listed as values for the `Sleep Duration` variable, so we will treat those as instances with missing values and remove them from our data set.
+-   As evident by the frequency tables, there are no missing values for the `Depression` variable in the data set, however there are 18 instances of `Others` being listed as values for the `Sleep Duration` variable, so we will treat those as instances with missing values and remove them from our data set.
 
 ```{r}
 depression <- depression %>% filter(`Sleep Duration` != "Others")
 ```
 
-* **Assumptions Required for Logistic Regression**: In order to use logistic regression to investigate our hypothesis, there are a few assumptions of the data that must be met in order for the model to be valid. That is (1), the outcome variable is binary (condition is met), (2), that the observations are independent of one another (condition is assumed based on how data was collected), (3), that the log-odds of the outcome is a linear function of the predictor variable, (4), that there is no multicollinearity (not of concern; only one variable involved in model), and (5), that there at least 10 events per predictor level (condition is met). In our case the only assumption that needs to be checked is the linearity of the log-odds.
-
+-   **Assumptions Required for Logistic Regression**: In order to use logistic regression to investigate our hypothesis, there are a few assumptions of the data that must be met in order for the model to be valid. That is (1), the outcome variable is binary (condition is met), (2), that the observations are independent of one another (condition is assumed based on how data was collected), (3), that the log-odds of the outcome is a linear function of the predictor variable, (4), that there is no multicollinearity (not of concern; only one variable involved in model), and (5), that there at least 10 events per predictor level (condition is met). In our case the only assumption that needs to be checked is the linearity of the log-odds.
 
 ```{r,out.width='45%',fig.align='center'}
 depression$`Sleep Duration` <- as.numeric(factor(
@@ -107,12 +106,12 @@ Based on the p-value of 0.948 corresponding to the `sleep_log` variable, at sign
 
 ### 2.1 The Model
 
-* **Results**:
-We use the `glm` function to generate the following logistic regression model for predicting the proportion of students reporting depression at the varying sleep ranges (and how that may be extrapolated to see how depression rates scale with sleep duration):
+-   **Results**: We use the `glm` function to generate the following logistic regression model for predicting the proportion of students reporting depression at the varying sleep ranges (and how that may be extrapolated to see how depression rates scale with sleep duration):
 
 $$
 \hat{DepressionProportion}=0.72583-0.15739SleepDuration
 $$
+
 ```{r}
 model <- glm(Depression ~ `Sleep Duration`, data = depression, family = binomial)
 tidy_model <- tidy(model)
@@ -120,9 +119,6 @@ tidy_model <- tidy_model %>%
   mutate(p.value = formatC(p.value, format = "e", digits = 2))
 kable(tidy_model,digits=3,caption="Logistic Model Table")
 ```
-
-
-
 
 ```{r,out.width='45%',fig.align='center'}
 
@@ -139,9 +135,9 @@ ggplot(depression, aes(x = `Sleep Duration`, y = predicted_prob)) +
   )
 ```
 
-* **Interpretation**: The model has an intercept coefficient of 0.72583, representing the average depression rate for students falling under the `0` Sleep Range (irrelevant as `1` is the reference group; representing less than 5 hours of sleep), and a `Sleep Duration` coefficient of -0.15739, representing the average change in depression probability when going from one sleep range to the next (in order). The p-values for both coefficients are <0.05, indicating statistical significance of the model.
+-   **Interpretation**: The model has an intercept coefficient of 0.72583, representing the average depression rate for students falling under the `0` Sleep Range (irrelevant as `1` is the reference group; representing less than 5 hours of sleep), and a `Sleep Duration` coefficient of -0.15739, representing the average change in depression probability when going from one sleep range to the next (in order). The p-values for both coefficients are \<0.05, indicating statistical significance of the model.
 
-* **Analyzing Performance: ROC curve and AUC**: To analyze the performance of the model we will investigate the ROC curve and area under the curve generated by the model:
+-   **Analyzing Performance: ROC curve and AUC**: To analyze the performance of the model we will investigate the ROC curve and area under the curve generated by the model:
 
 ```{r,out.width='45%',fig.align='center'}
 library(pROC)
