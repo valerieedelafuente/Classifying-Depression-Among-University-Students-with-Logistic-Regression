@@ -188,7 +188,39 @@ depression_data <- depression_data %>% filter(
 )
 ```
 
-The results of the model are summarized in the following table:
+Logistic Regression models have a few assumptions that must be met to perform properly. (Named elsewhere) We already have met, or assume we have met, most of the assumptions besides the one that says the predictor variable should be linear in the log-odds of the outcome variable. We can check this by plotting the log-odds against the levels of the predictor variable to assesst the linearity:
+
+```{r, echo=FALSE}
+depression_data$dietary_habits <- 
+  as.numeric(factor(depression_data$dietary_habits, 
+                    levels = c("Healthy", "Moderate", "Unhealthy")))
+
+depression_data <- depression_data %>% mutate(
+  depression = case_when(
+    depression == "Yes" ~ 1,
+    depression == "No" ~ 0
+  )
+)
+```
+
+```{r, echo=FALSE, message=FALSE}
+logOddsDF <- depression_data %>%
+  group_by(dietary_habits) %>%
+  summarize(
+    odds = mean(depression),
+    logOdds = log(odds/(1-odds)))
+
+ggplot(logOddsDF, aes(x = dietary_habits, y = logOdds)) +
+  geom_point() + geom_smooth(method = 'lm', se = FALSE) +
+  scale_x_continuous(
+    breaks = c(1, 2, 3),
+    labels = c("Healthy", "Moderate", "Unhealthy")) +  
+  labs(title = "Log-Odds of Depression by Dietary Habits", y = "Log-Odds", x = "Dietary Habits")
+```
+
+There appears to be a strong linear relationship between the log-odds of depression by each level of Dietary Habits, so we can conclude that our data meets the necessary assumption and move on to fitting our model.
+
+We will fit a logistic regression model with the logit link function that will predict the odds of having depression by each level of Dietary Habits. The results of the model are summarized in the following table:
 
 ```{r, echo=FALSE}
 dietHabitsModel <- glm(depression ~ dietary_habits - 1, data = depression_data,
