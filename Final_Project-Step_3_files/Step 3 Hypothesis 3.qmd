@@ -1,0 +1,434 @@
+---
+title: "Final Step 3"
+format: pdf
+editor: visual
+---
+
+```{r, include=FALSE, message=FALSE}
+# Load necessary packages
+library(readr)
+library(tidyverse)
+library(naniar)
+library(janitor)
+library(knitr)
+library(rmarkdown)
+library(car)
+library(caret)
+#setwd("/Documents/PSTAT 100/finalproject/PSTAT-100-Project/")
+
+# Load in the data
+depression_data <- read.csv("student_depression_dataset.csv")
+```
+
+```{r, include=FALSE}
+# Fix column names
+depression_data <- depression_data %>% 
+  clean_names() %>%
+  rename(
+    cum_gpa = cgpa,
+    suicidal_thoughts = have_you_ever_had_suicidal_thoughts,
+    fam_mental_illness = family_history_of_mental_illness
+  )
+
+# Fixing the `financial_stress` variable
+depression_data <- depression_data %>%
+  mutate(
+    financial_stress = as.numeric(financial_stress), 
+    # convert string numbers to integers
+    financial_stress = case_when(
+      financial_stress == "?" ~ NA,
+      # convert "?" to NA values
+      .default = financial_stress))
+
+# Remove 3 rows with NA values
+depression_data <- depression_data %>% na.omit()
+
+# Factorizing the `gender` variable
+depression_data$gender <- factor(depression_data$gender)
+
+# Fixing the `city` variable to change invalid entries
+depression_data <- depression_data %>%
+  mutate(city = case_when(
+    city == "Khaziabad" ~ "Ghaziabad",
+    city == "Nalyan" ~ "Kalyan",
+    city == "'Less Delhi'" ~ "Delhi",
+    city == "'Less than 5 Kalyan'" ~ "Kalyan",
+    city == "3.0" ~ "Other",
+    city == "Saanvi" ~ "Other",
+    city == "M.Tech" ~ "Other",
+    city == "Bhavna" ~ "Other",
+    city == "City" ~ "Other",
+    city == "Mira" ~ "Other",
+    city == "Harsha" ~ "Other",
+    city == "Vaanya" ~ "Other",
+    city == "Gaurav" ~ "Other",
+    city == "Harsh" ~ "Other",
+    city == "Reyansh" ~ "Other",
+    city == "Kibara" ~ "Other",
+    city == "Rashi" ~ "Other",
+    city == "ME" ~ "Other",
+    city == "M.Com" ~ "Other",
+    city == "Mihir" ~ "Other",
+    city == "Nalini" ~ "Other",
+    city == "Nandini" ~ "Other",
+    TRUE ~ city  # Leave valid entries as they are
+  ))
+
+# # Fixing the `profession` variable to change invalid entries
+depression_data <- depression_data %>%
+  mutate(profession = case_when(
+    profession == "'Civil Engineer'" ~ "Civil Engineer",
+    profession == "'UX/UI Designer'" ~ "UX/UI Designer",
+    profession == "'Digital Marketer'" ~ "Digital Marketer",
+    profession == "'Content Writer'" ~ "Content Writer",
+    profession == "'Educational Consultant'" ~ "Educational Consultant",
+    TRUE ~ profession # Leave valid entries as they are
+  ))
+
+
+# Fixing the `work_pressure` variable for proper scaling
+depression_data <- depression_data %>%
+  mutate(work_pressure = case_when(
+    work_pressure == 0 ~ 0,
+    work_pressure == 2 ~ 1,
+    work_pressure == 5 ~ 3
+  ))
+
+# Fixing the `sleep_duration` variable to change invalid entries
+depression_data <- depression_data %>% 
+  mutate(sleep_duration = case_when(
+    sleep_duration == "'5-6 hours'" ~ "5-6 hours",
+    sleep_duration == "'Less than 5 hours'" ~ "Less than 5 hours",
+    sleep_duration == "'7-8 hours'" ~ "7-8 hours",
+    sleep_duration == "'More than 8 hours'" ~ "More than 8 hours",
+    sleep_duration == "Others" ~ "Other"
+  ))
+
+# Factorizing the `sleep_duration` variable
+depression_data <- depression_data %>%
+  mutate(sleep_duration = factor(sleep_duration, 
+                                 levels = c("Less than 5 hours", 
+                                            "5-6 hours", 
+                                            "7-8 hours", 
+                                            "More than 8 hours", 
+                                            "Other"),
+                                 ordered = TRUE))
+
+# Fixing the `dietary_habits` variable to change misspelling
+depression_data <- depression_data %>% 
+  mutate(dietary_habits = case_when(
+    dietary_habits == "Others" ~ "Other",
+    TRUE ~ dietary_habits
+  ))
+
+# Factorizing the `dietary_habits` variable
+depression_data <- depression_data %>%
+  mutate(dietary_habits = factor(dietary_habits,
+                                 levels = c("Healthy", "Moderate", "Unhealthy",
+                                            "Other"),
+                                 ordered = TRUE))
+
+# Fixing the `degree` variable to change invalid entries
+depression_data <- depression_data %>%
+  mutate(degree = case_when(
+    degree == "'Class 12'" ~ "High School",
+    degree == "Others" ~ "Other",  
+    # Others could less than HS education or totally unknown. 
+    .default = degree
+  ))
+
+# Factorizing the `degree variable`
+degree_levels <- c(
+  "High School",
+  "BA", "BSc", "B.Com", "BCA", "B.Pharm", "B.Ed", "B.Tech", "BE", "BHM", "B.Arch", "BBA",
+  "MA", "MSc", "MBA", "M.Com", "MCA", "M.Tech", "M.Ed", "M.Pharm", "MHM",
+  "LLB", "LLM", "MD", "MBBS",
+  "PhD",
+  "Other"
+)
+
+depression_data <- depression_data %>%
+  mutate(degree = factor(degree, levels = degree_levels, ordered = TRUE))
+
+# Factorizing the `suicidal_thoughts` variable
+depression_data$suicidal_thoughts <- factor(depression_data$suicidal_thoughts)
+
+# Factorizing the `fam_mental_illness` variable
+depression_data$fam_mental_illness <- factor(depression_data$fam_mental_illness)
+
+# Turning the `depression` variable back to "yes" and "no" for visualization purposes
+depression_data <- depression_data %>% 
+  mutate(depression = case_when(
+    depression == 0 ~ "No",
+    depression == 1 ~ "Yes"
+  ))
+
+# Factorizing the `depression` variable
+depression_data$depression <- factor(depression_data$depression)
+```
+
+## Abstract
+
+## Introduction
+
+## Hypothesis 1: Will
+
+Our first hypothesis we want to test is that students with moderate to healthy dietary habits will have lower rates of depression than students with unhealthy dietary habits. We will fit a basic logistic regression model to predict the binary outcome variable, "depression", using our categorical variable "dietary_habits" as a predictor.
+
+Before fitting our model, we should first fully understand the predictor we are working with as well as check some assumptions that need to be met for our model to function properly. Our predictor "Dietary Habits" is distributed as follows:
+
+```{r, echo=FALSE}
+kable(table(depression_data$dietary_habits), col.names = c("Habits", "Count"))
+```
+
+We have a slightly skewed distribution of responses between Healthy, Moderate, and Unhealthy dietary habits, as well as 12 observations that responded "Other". Because these 12 responses are a very small fraction of the overall data, we can remove these to simplify our model and our interpretations of it.
+
+```{r, echo=FALSE}
+depression_data <- depression_data %>% filter(
+  dietary_habits != "Other"
+)
+```
+
+Logistic Regression models have a few assumptions that must be met to perform properly. (Named elsewhere) We already have met, or assume we have met, most of the assumptions besides the one that says the predictor variable should be linear in the log-odds of the outcome variable. We can check this by plotting the log-odds against the levels of the predictor variable to assesst the linearity:
+
+```{r, echo=FALSE}
+depression_data$dietary_habits <- 
+  as.numeric(factor(depression_data$dietary_habits, 
+                    levels = c("Healthy", "Moderate", "Unhealthy")))
+
+depression_data <- depression_data %>% mutate(
+  depression = case_when(
+    depression == "Yes" ~ 1,
+    depression == "No" ~ 0
+  )
+)
+```
+
+```{r, echo=FALSE, message=FALSE}
+logOddsDF <- depression_data %>%
+  group_by(dietary_habits) %>%
+  summarize(
+    odds = mean(depression),
+    logOdds = log(odds/(1-odds)))
+
+ggplot(logOddsDF, aes(x = dietary_habits, y = logOdds)) +
+  geom_point() + geom_smooth(method = 'lm', se = FALSE) +
+  scale_x_continuous(
+    breaks = c(1, 2, 3),
+    labels = c("Healthy", "Moderate", "Unhealthy")) +  
+  labs(title = "Log-Odds of Depression by Dietary Habits", y = "Log-Odds", x = "Dietary Habits")
+```
+
+There appears to be a strong linear relationship between the log-odds of depression by each level of Dietary Habits, so we can conclude that our data meets the necessary assumption and move on to fitting our model.
+
+We will fit a logistic regression model with the logit link function that will predict the odds of having depression by each level of Dietary Habits. The results of the model are summarized in the following table:
+
+```{r, echo=FALSE}
+dietHabitsModel <- glm(depression ~ dietary_habits - 1, data = depression_data,
+                       family = binomial(link = 'logit'))
+
+logModelSum <- summary(dietHabitsModel)
+kable(logModelSum$coefficients, format = 'markdown', digits = 42)
+```
+
+We see statistically significant results from our basic logistic regression model with just dietary habits as a predictor. Every level of dietary habits has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by about 18.5%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 24 and 88 percent respectively. This is a very strong result to start with, but we should check our model results in other ways as well.
+
+We will first check to make sure the Dietary Habits categorical predictor is significant in predicting the presence of depression overall rather than just by the level of the variable. We will use the "anova" function to perform a Chi-Squared likelihood ratio test with a null hypothesis that the null model without Dietary Habits is sufficient in predicting depression, and an alternative hypothesis that Dietary Habits is significant to the model in terms of lowering the model's residual deviance. The results of the anova are the following:
+
+```{r, echo=FALSE}
+logModANOVA <- anova(dietHabitsModel)
+kable(logModANOVA, digits = 1000)
+```
+
+This table shows us that when added to the null model, the Dietary Habits predictor reduced the model's residual deviance so greatly that the p-value for our likelihood ratio test is too small for R to display it. The true p-value is less than 2.2 \* 10\^-16, which is extremely tiny and reasonably rounded to 0. With this similarly significant result to the model results earlier, we can conclude that the Dietary Habits predictor as a whole is significant in predicting the presence of depression.
+
+We can now check how accurate our model is at predicting the presence of depression using a Confusion Matrix. The Confusion Matrix will visualize the accuracy of our model in terms of true positive and negative rates in the diagonal cells, false positive rate in the bottom left cell (row 2, column 1), and false negative rate in the top right cell (row 1, col 2).
+
+```{r, echo=FALSE}
+pred_probs <- predict(dietHabitsModel, type = "response")
+
+pred_class <- ifelse(pred_probs > 0.5, 1, 0)
+
+pred_class <- factor(pred_class, levels = c(0, 1))
+actual <- factor(depression_data$depression, levels = c(0, 1))
+
+confMat <- confusionMatrix(pred_class, actual, positive = "1")
+
+accuracy <- confMat$overall[1]
+
+kable(confMat$table/(dim(depression_data)[1]), digits = 3)
+```
+
+Here we see our model has an accuracy of 0.61 or 61%, a false positive rate of 0.265 or 26.5%, and a false negative rate of 0.125 or 12.5%. This means our model with just Dietary Habits as a predictor is slightly better at predicting the presence of depression than a random guess.
+
+Despite the fact that this model cannot predict the presence of depression with an impressive accuracy, the results of our model fit and surrounding hypothesis tests lead us to fail to reject our hypothesis that students with moderate to healthy dietary habits will have lower rates of depression than students with unhealthy dietary habits.
+
+## Hypothesis 2: Matthew
+
+Students who average more sleep per night will have lower rates of depression compared to students who average less.
+
+## Hypothesis 3: Hayden
+
+Our final hypothesis we want to test is that students with multiple combined stressors will have a higher overall rate of depression than students without these stressors. We will fit a logistic regression model to predict the binary outcome variable, “depression”, using the numeric variable Total Stressors (combination of Academic Pressure + Work Pressure + Financial Stress) as a predictor.
+
+Before fitting our model, we should first fully understand the predictor we are working with aswell as check some assumptions that need to be met for our model to function properly. Our predictor “Total Stressor” is distributed as follows:
+
+```{r, echo=FALSE}
+
+# Step 1: Ensure depression is binary numeric
+depression_data <- depression_data %>%
+  mutate(
+    depression_numeric = as.numeric(depression),  # "No" = 0, "Yes" = 1
+    financial_stress = as.numeric(financial_stress),  # convert if it's currently character
+    total_stress = academic_pressure + work_pressure + financial_stress  # combined stressor score
+  )
+
+ggplot(depression_data, aes(x = total_stress)) +
+  geom_histogram(binwidth = 1, fill = "steelblue", color = "white") +
+  labs(title = "Distribution of Total Stress", x = "Total Stress", y = "Count") +
+  theme_minimal()
+```
+
+.
+
+Looking at our data we can tell that it has a bell curve distribution and overall has a good representation of many different Total Stressor values. As a result the data does not need any cleaning and is ready to be used in our logistic regression model.
+
+As mentioned in the previous hypothesis, Logistic Regression models have a few assumptions that we assume to have already met. The only one that we need to verify is the one that says the predictor variable should be linear in the log-odds of the outcome variable. We can check this by plotting the log-odds against the different amounts of Total Stressors:
+
+```{r, echo=FALSE, message=FALSE}
+
+# Step 2: Fit logistic regression model
+logit_model <- glm(depression_numeric ~ total_stress, 
+                   data = depression_data, 
+                   family = binomial)
+
+# Step 2: Get predicted log-odds (logits)
+depression_data$logit <- predict(logit_model, type = "link")  # link = log-odds
+
+# Step 3: Plot logit vs total_stress
+ggplot(depression_data, aes(x = total_stress, y = logit)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "loess", color = "blue") +
+  labs(
+    title = "Linearity in the Logit for Total Stress",
+    x = "Total Stress",
+    y = "Logit (Log-Odds of Depression)"
+  ) +
+  theme_minimal()
+
+
+```
+
+There appears to be a strong linear relationship between the log-odds of depression by Total Stressors, so we can conclude that our data meets the necessary assumption and move on to fitting our model.
+
+We will fit a logistic regression model that will predict the odds of having depression by each level of Total Stressor. The results of the model are summarized in the following table:
+
+```{r, echo=FALSE}
+
+
+model_summary <- summary(logit_model)
+coefs <- coef(model_summary)
+
+# Create a data frame manually
+logit_df <- data.frame(
+  Term = rownames(coefs),
+  Estimate = round(coefs[, "Estimate"], 3),
+  `Std. Error` = round(coefs[, "Std. Error"], 3),
+  `z value` = round(coefs[, "z value"], 2),
+  `Pr(>|z|)` = formatC(coefs[, "Pr(>|z|)"], format = "e", digits = 2),
+  `Odds Ratio` = round(exp(coefs[, "Estimate"]), 3)
+)
+
+# Display nicely with kable
+kable(logit_df, caption = "Logistic Regression: Predicting Depression from Total Stress")
+```
+
+We see statistically significant results from our basic logistic regression model using Total Stressors as a predictor. Our model predicts that for every one point increase in the presence of Total Stressors will double the likelihood of depression. This is a very strong result to start with, but we should check our model results in other ways as well.
+
+We will first check to make sure the Total Stressors numeric predictor is significant in predicting the presence of depression overall. We will use the "anova" function to perform a Chi-Squared likelihood ratio test with a null hypothesis that the null model without Total Stressors is sufficient in predicting depression, and an alternative hypothesis that Total Stressors is significant to the model in terms of lowering the model's residual deviance. The results of the anova are the following:
+
+```{r, echo=FALSE}
+# Fit null and full models
+null_model <- glm(depression ~ 1, data = depression_data, family = binomial)
+full_model <- glm(depression ~ total_stress, data = depression_data, family = binomial)
+
+# Likelihood Ratio Test via ANOVA
+anova_result <- anova(null_model, full_model, test = "Chisq")
+
+# Convert to data frame and add row names
+anova_df <- as.data.frame(anova_result)
+anova_df$Model <- rownames(anova_result)
+
+# Reorder columns if needed
+anova_df <- anova_df[, c("Model", "Df", "Deviance", "Resid. Df", "Resid. Dev", "Pr(>Chi)")]
+
+# Rename for clarity
+colnames(anova_df) <- c("Model", "Df", "Deviance", "Residual_Df", "Residual_Dev", "P_value")
+
+# Format using kable with scientific notation
+knitr::kable(
+  anova_df, 
+  digits = 4, 
+  format.args = list(scientific = TRUE), 
+  caption = "Chi-Squared Likelihood Ratio Test: Comparing Null vs. Total Stressors Model"
+)
+```
+
+This table shows us that when added to the null model, the Total Stressors predictor reduced the model's residual deviance so greatly that the p-value for our likelihood ratio test is too small for R to display it. The true p-value is less than 2.2e-16, which is extremely tiny and reasonably rounded to 0. With this similarly significant result to the model results earlier, we can conclude that the Total Stressors predictor as a whole is significant in predicting the presence of depression. Thus we reject the null hypothesis that the simpler model without Total Stressors is sufficient in predicting depression. The extremely low p-value indicates that the model including Total Stressors provides a significantly better fit to the data. Thus, we conclude that Total Stressors is a significant predictor of depression.
+
+Lastly we will check how accurate our model is at predicting the presence of depression using a Confusion Matrix. The Confusion Matrix will visualize the accuracy of our model in terms of true positive and negative rates in the diagonal cells, false positive rate in the bottom left cell (row 2, column 1), and false negative rate in the top right cell (row 1, col 2).
+
+```{r, echo=FALSE}
+# Step 1: Fit the logistic regression model
+model <- glm(depression ~ total_stress, data = depression_data, family = binomial)
+
+# Step 2: Predict probabilities
+predicted_prob <- predict(model, type = "response")
+
+# Step 3: Convert probabilities to binary class predictions
+predicted_class <- ifelse(predicted_prob >= 0.5, "Yes", "No")
+
+# Step 4: Convert actual depression variable to "Yes"/"No" character labels
+actual_class <- ifelse(depression_data$depression == 1 | depression_data$depression == "Yes", "Yes", "No")
+
+# Step 5: Convert both to factors with matching levels
+predicted_class <- factor(predicted_class, levels = c("No", "Yes"))
+actual_class <- factor(actual_class, levels = c("No", "Yes"))
+
+# Step 6: Generate confusion matrix
+cm <- confusionMatrix(predicted_class, actual_class)
+
+# Step 7: Extract confusion matrix table and convert to data frame
+cm_table <- as.data.frame.matrix(cm$table)
+cm_table <- tibble::rownames_to_column(cm_table, var = "Prediction")
+
+# Step 8: Display confusion matrix with kable
+kable(cm_table, caption = "Confusion Matrix (Predicted vs Actual)",
+      col.names = c("Prediction", "Actual: No", "Actual: Yes"))
+
+# Step 9: Create data frame of key performance metrics
+metrics <- data.frame(
+  Metric = c("Accuracy", "95% CI", "No Information Rate", 
+             "P-Value [Acc > NIR]", "Kappa", "McNemar's Test P-Value"),
+  Value = c(
+    round(cm$overall["Accuracy"], 4),
+    paste0("(", round(cm$overall["AccuracyLower"], 4), ", ", round(cm$overall["AccuracyUpper"], 4), ")"),
+    round(cm$overall["AccuracyNull"], 4),
+    format.pval(cm$overall["AccuracyPValue"], eps = .001, digits = 4),
+    round(cm$overall["Kappa"], 4),
+    format.pval(cm$overall["McnemarPValue"], eps = .001, digits = 4)
+  )
+)
+
+# Step 10: Display metrics table with kable
+kable(metrics, caption = "Model Performance Metrics from Confusion Matrix",
+      col.names = c("Metric", "Value"))
+```
+
+Here we see our model has an accuracy of 0.7565 or 75.65%. This means our model with Total Stressors as a predictor is significantly better at predicting the presence of depression than a random guess.
+
+Seeing that This model can predict the presence of depression with an impressive accuracy, the results of our model fit and surrounding hypothesis tests lead us to reject the null hypothesis that the simpler model without Total Stressors is sufficient in predicting depression. Thus concluding that the Total Stressors is a significant predictor of depression.
+
+## Conclusion
+
+## Recommendations
