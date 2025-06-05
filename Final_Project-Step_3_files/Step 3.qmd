@@ -1,12 +1,56 @@
 ---
 title: "Classifying Depression Among University Students"
-author: "Valerie De La Fuente (valeriedelafuente), Matthew Arteaga (matthewarteaga), Phuc Lu (pdlu), William Nelson (williamnelson), Hayden Galleta (haydengalleta)"
-class: "PSTAT 100"
-date: "06-09-25"
-format: pdf
-editor: visual
+subtitle: "PSTAT 100: Data Science Concepts and Analysis"
+date: "2025-06-09"
+format: 
+  pdf: 
+    latex-engine: xelatex
+    geometry: "letterpaper, margin=0.3in"
+    code-fold: true
+    code-line-numbers: true
+    code-copy: true
+    code-tools: true
+    self-contained: true
+    toc: false
+    toc-location: left
+    number-sections: true
 ---
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE
+)
+
+bfcolor <- function(x, color) {
+  if (knitr::is_latex_output()) {
+    sprintf("\\textcolor{%s}{\\textbf{%s}}", color, x)
+  } else if (knitr::is_html_output()) {
+    sprintf("<span style='color: %s;'><b>%s</b></span>", color, x)
+  } else x
+}
+```
+
+
+:::: callout
+::: {style="text-align: center"}
+[**Group Members**]{style="color: blue;"}
+:::
+
+-   Valerie De La Fuente (valeriedelafuente)
+-   Matthew Arteaga (matthewarteaga)
+-   Phuc Lu (pdlu)
+-   William Nelson (williamnelson)
+-   Hayden Galletta (haydengalletta)
+::::
+
+## Abstract
+
+## Introduction
+
+## Data Processing
 ```{r}
 #| label: setup
 #| include: false
@@ -34,6 +78,8 @@ depression_data <- read.csv("student_depression_dataset.csv")
 ```
 
 ```{r, include=FALSE}
+# Data cleaning and preprocessing
+
 # Fix column names
 depression_data <- depression_data %>% 
   clean_names() %>%
@@ -180,17 +226,11 @@ depression_data <- depression_data %>%
 depression_data$depression <- factor(depression_data$depression)
 ```
 
-## Abstract
-
-## Introduction
-
-## Data Processing
-
 ## Exploratory Data Analysis
 
 ## Modeling Process
 
-### Hypothesis 1: Will
+### Hypothesis 1: Students with moderate to healthy dietary habits have lower rates of depression compared to students with unhealthy dietary habits.
 
 Our first hypothesis we want to test is that students with moderate to healthy dietary habits will have lower rates of depression than students with unhealthy dietary habits. We will fit a basic logistic regression model to predict the binary outcome variable, "depression", using our categorical variable "dietary_habits" as a predictor.
 
