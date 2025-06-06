@@ -1,5 +1,5 @@
 ---
-title: "Classifying Depression Among University Students"
+title: "Classifying Depression Among University Students with Logistic Regression"
 subtitle: "PSTAT 100: Data Science Concepts and Analysis"
 date: "2025-06-09"
 format: 
@@ -33,7 +33,6 @@ bfcolor <- function(x, color) {
 }
 ```
 
-
 :::: callout
 ::: {style="text-align: center"}
 [**Group Members**]{style="color: blue;"}
@@ -51,6 +50,7 @@ bfcolor <- function(x, color) {
 ## Introduction
 
 ## Data Processing
+
 ```{r}
 #| label: setup
 #| include: false
@@ -226,21 +226,104 @@ depression_data <- depression_data %>%
 depression_data$depression <- factor(depression_data$depression)
 ```
 
+The column names in the original dataset were changed to the following: `id`, `gender`, `age`, `city`, `profession`, `academic_pressure`, `work_pressure`, `cum_gpa`, `study_satisfaction`, `job_satisfaction`, `sleep_duration`, `dietary_habits`, `degree`, `suicidal_thoughts`, `work_study_hours`, `financial_stress`, `fam_mental_illness`, and `depression`.
+
+The following variables were mutated:
+
+-   `financial_stress`: variable type was converted to numeric and invalid entries were properly handled.
+
+-   `gender`: variable type was converted to a factor.
+
+-   `city`: typos and invalid entries properly handled.
+
+-   `profession`: invalid entries were properly handled.
+
+-   `sleep_duration`: invalid entries were properly handled.
+
+-   `dietary_habits`: typos were properly handled.
+
+-   `suicidal_thoughts`: variable type was converted to a factor.
+
+-   `fam_mental_illness`: variable type was converted to a factor.
+
+-   `depression`: variable type was converted to a factor.
+
 ## Exploratory Data Analysis
+
+This first graph is a bar plot that helps us visualize hypothesis 1 by visualizing the correlation between a healthy diet and depression. Notably, around 45% of students with healthy dietary habits have depression, around 55% of students with moderate dietary habits have depression, and 75% of students with unhealthy dietary habits have depression. The results of this bar plot indicate that depression rates increase and student dietary habits worsen.
+
+```{r}
+# For dietary habits
+ggplot(depression_data, aes(x = dietary_habits, fill = factor(depression))) +
+  geom_bar(position = "fill", color = "black") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Depression Distribution by Dietary Habit",
+       x = "Dietary Habit", y = "Proportion",
+       fill = "Depression") +
+  theme_bw(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+The second graph is a bar plot that helps to answer hypothesis 2 by visualizing the correlation between sleep patterns and depression. The results of this bar plot seem to indicate that people getting less than 5 hours of sleep have a significantly higher rate of depression and people who get more than 8 hours of sleep have a significantly lower rate of depression. This indicates that lower rates of depression are linked to a greater daily sleep duration.
+
+```{r}
+# Convert 'depression' factor to numeric: "No" = 0, "Yes" = 1
+depression_data <- depression_data %>%
+  mutate(depression_numeric = as.numeric(depression) - 1)
+
+# Create summarized depression rates and standard errors by sleep duration
+sleep_summary <- depression_data %>%
+  group_by(sleep_duration) %>%
+  summarise(
+    mean_dep = mean(depression_numeric, na.rm = TRUE),
+    se = sd(depression_numeric, na.rm = TRUE) / sqrt(n())
+  )
+
+# Bar plot with error bars
+ggplot(sleep_summary, aes(x = sleep_duration, y = mean_dep, fill = sleep_duration)) +
+  geom_col(show.legend = FALSE) +
+
+  labs(
+    title = "Depression Rate by Sleep Duration",
+    x = "Sleep Duration",
+    y = "Mean Depression Rate"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+This final graph is a boxplot that helps visualize hypothesis 3 and shows the correlation between multiple stressor factors and depression. The results seem to indicate a correlation with the increased stress levels and depression.
+
+```{r}
+depression_data$financial_stress <- as.numeric(depression_data$financial_stress)
+depression_data$total_stress <- depression_data$academic_pressure +
+                                 depression_data$work_pressure +
+                                 depression_data$financial_stress
+
+ggplot(depression_data, aes(x = factor(depression), y = total_stress, fill = factor(depression))) +
+  geom_boxplot() +
+  labs(
+    title = "Total Reported Stress vs Depression",
+    x = "Depression (0 = No, 1 = Yes)",
+    y = "Total Stress"
+  ) +
+  scale_fill_discrete(name = "Depression") +
+  theme_minimal()
+```
 
 ## Modeling Process
 
 ### Hypothesis 1: Students with moderate to healthy dietary habits have lower rates of depression compared to students with unhealthy dietary habits.
 
-Our first hypothesis we want to test is that students with moderate to healthy dietary habits will have lower rates of depression than students with unhealthy dietary habits. We will fit a basic logistic regression model to predict the binary outcome variable, "depression", using our categorical variable "dietary_habits" as a predictor.
+Our first hypothesis we want to test is that students with moderate to healthy dietary habits will have lower rates of depression than students with unhealthy dietary habits. We will fit a basic logistic regression model to predict the binary outcome variable, `depression`, using our categorical variable `dietary_habits` as a predictor.
 
-Before fitting our model, we should first fully understand the predictor we are working with as well as check some assumptions that need to be met for our model to function properly. Our predictor "Dietary Habits" is distributed as follows:
+Before fitting our model, we should first fully understand the predictor we are working with as well as check some assumptions that need to be met for our model to function properly. Our predictor `dietary_habits` is distributed as follows:
 
 ```{r, echo=FALSE}
 kable(table(depression_data$dietary_habits), col.names = c("Habits", "Count"))
 ```
 
-We have a slightly skewed distribution of responses between Healthy, Moderate, and Unhealthy dietary habits, as well as 12 observations that responded "Other". Because these 12 responses are a very small fraction of the overall data, we can remove these to simplify our model and our interpretations of it.
+We have a slightly skewed distribution of responses between "healthy", "moderate", and "unhealthy" dietary habits, as well as 12 observations that responded "other". Because these 12 responses are a very small fraction of the overall data, we can remove these to simplify our model and our interpretations of it.
 
 ```{r, echo=FALSE}
 depression_data <- depression_data %>% filter(
@@ -248,7 +331,7 @@ depression_data <- depression_data %>% filter(
 )
 ```
 
-Logistic Regression models have a few assumptions that must be met to perform properly. (Named elsewhere) We already have met, or assume we have met, most of the assumptions besides the one that says the predictor variable should be linear in the log-odds of the outcome variable. We can check this by plotting the log-odds against the levels of the predictor variable to assesst the linearity:
+Logistic regression models rely on several key assumptions to perform correctly. Most of these assumptions have already been met or are reasonably assumed to be satisfied, except for the assumption that the predictor variable should have a linear relationship with the log-odds of the outcome variable. To assess this, we can plot the log-odds of the outcome against the levels of the predictor to evaluate whether the linearity assumption holds.
 
 ```{r, echo=FALSE}
 depression_data$dietary_habits <- 
@@ -275,7 +358,8 @@ ggplot(logOddsDF, aes(x = dietary_habits, y = logOdds)) +
   scale_x_continuous(
     breaks = c(1, 2, 3),
     labels = c("Healthy", "Moderate", "Unhealthy")) +  
-  labs(title = "Log-Odds of Depression by Dietary Habits", y = "Log-Odds", x = "Dietary Habits")
+  labs(title = "Log-Odds of Depression by Dietary Habits", y = "Log-Odds", x = "Dietary Habits") +
+  theme_minimal()
 ```
 
 There appears to be a strong linear relationship between the log-odds of depression by each level of Dietary Habits, so we can conclude that our data meets the necessary assumption and move on to fitting our model.
