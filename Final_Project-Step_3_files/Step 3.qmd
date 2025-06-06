@@ -362,49 +362,7 @@ ggplot(logOddsDF, aes(x = dietary_habits, y = logOdds)) +
   theme_minimal()
 ```
 
-There appears to be a strong linear relationship between the log-odds of depression by each level of Dietary Habits, so we can conclude that our data meets the necessary assumption and move on to fitting our model.
-
-We will fit a logistic regression model with the logit link function that will predict the odds of having depression by each level of Dietary Habits. The results of the model are summarized in the following table:
-
-```{r, echo=FALSE}
-dietHabitsModel <- glm(depression ~ dietary_habits - 1, data = depression_data,
-                       family = binomial(link = 'logit'))
-
-logModelSum <- summary(dietHabitsModel)
-kable(logModelSum$coefficients, format = 'markdown', digits = 42)
-```
-
-We see statistically significant results from our basic logistic regression model with just dietary habits as a predictor. Every level of dietary habits has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by about 18.5%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 24 and 88 percent respectively. This is a very strong result to start with, but we should check our model results in other ways as well.
-
-We will first check to make sure the Dietary Habits categorical predictor is significant in predicting the presence of depression overall rather than just by the level of the variable. We will use the "anova" function to perform a Chi-Squared likelihood ratio test with a null hypothesis that the null model without Dietary Habits is sufficient in predicting depression, and an alternative hypothesis that Dietary Habits is significant to the model in terms of lowering the model's residual deviance. The results of the anova are the following:
-
-```{r, echo=FALSE}
-logModANOVA <- anova(dietHabitsModel)
-kable(logModANOVA, digits = 1000)
-```
-
-This table shows us that when added to the null model, the Dietary Habits predictor reduced the model's residual deviance so greatly that the p-value for our likelihood ratio test is too small for R to display it. The true p-value is less than 2.2 \* 10\^-16, which is extremely tiny and reasonably rounded to 0. With this similarly significant result to the model results earlier, we can conclude that the Dietary Habits predictor as a whole is significant in predicting the presence of depression.
-
-We can now check how accurate our model is at predicting the presence of depression using a Confusion Matrix. The Confusion Matrix will visualize the accuracy of our model in terms of true positive and negative rates in the diagonal cells, false positive rate in the bottom left cell (row 2, column 1), and false negative rate in the top right cell (row 1, col 2).
-
-```{r, echo=FALSE}
-pred_probs <- predict(dietHabitsModel, type = "response")
-
-pred_class <- ifelse(pred_probs > 0.5, 1, 0)
-
-pred_class <- factor(pred_class, levels = c(0, 1))
-actual <- factor(depression_data$depression, levels = c(0, 1))
-
-confMat <- confusionMatrix(pred_class, actual, positive = "1")
-
-accuracy <- confMat$overall[1]
-
-kable(confMat$table/(dim(depression_data)[1]), digits = 3)
-```
-
-Here we see our model has an accuracy of 0.61 or 61%, a false positive rate of 0.265 or 26.5%, and a false negative rate of 0.125 or 12.5%. This means our model with just Dietary Habits as a predictor is slightly better at predicting the presence of depression than a random guess.
-
-Despite the fact that this model cannot predict the presence of depression with an impressive accuracy, the results of our model fit and surrounding hypothesis tests lead us to fail to reject our hypothesis that students with moderate to healthy dietary habits will have lower rates of depression than students with unhealthy dietary habits.
+There appears to be a strong linear relationship between the log-odds of depression by each level of `dietary_habits`, so we can conclude that our data meets the necessary assumption and move on to fitting our model.
 
 ### Hypothesis 2
 
@@ -700,6 +658,49 @@ Here we see our model has an accuracy of 0.7565 or 75.65%. This means our model 
 Seeing that This model can predict the presence of depression with an impressive accuracy, the results of our model fit and surrounding hypothesis tests lead us to reject the null hypothesis that the simpler model without Total Stressors is sufficient in predicting depression. Thus concluding that the Total Stressors is a significant predictor of depression.
 
 ## Results
+
+### Hypothesis 1
+We will fit a logistic regression model with the logit link function that will predict the odds of having depression by each level of Dietary Habits. The results of the model are summarized in the following table:
+
+```{r, echo=FALSE}
+dietHabitsModel <- glm(depression ~ dietary_habits - 1, data = depression_data,
+                       family = binomial(link = 'logit'))
+
+logModelSum <- summary(dietHabitsModel)
+kable(logModelSum$coefficients, format = 'markdown', digits = 42)
+```
+
+We see statistically significant results from our basic logistic regression model with just dietary habits as a predictor. Every level of dietary habits has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by about 18.5%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 24 and 88 percent respectively. This is a very strong result to start with, but we should check our model results in other ways as well.
+
+We will first check to make sure the Dietary Habits categorical predictor is significant in predicting the presence of depression overall rather than just by the level of the variable. We will use the "anova" function to perform a Chi-Squared likelihood ratio test with a null hypothesis that the null model without Dietary Habits is sufficient in predicting depression, and an alternative hypothesis that Dietary Habits is significant to the model in terms of lowering the model's residual deviance. The results of the anova are the following:
+
+```{r, echo=FALSE}
+logModANOVA <- anova(dietHabitsModel)
+kable(logModANOVA, digits = 1000)
+```
+
+This table shows us that when added to the null model, the Dietary Habits predictor reduced the model's residual deviance so greatly that the p-value for our likelihood ratio test is too small for R to display it. The true p-value is less than 2.2 \* 10\^-16, which is extremely tiny and reasonably rounded to 0. With this similarly significant result to the model results earlier, we can conclude that the Dietary Habits predictor as a whole is significant in predicting the presence of depression.
+
+We can now check how accurate our model is at predicting the presence of depression using a Confusion Matrix. The Confusion Matrix will visualize the accuracy of our model in terms of true positive and negative rates in the diagonal cells, false positive rate in the bottom left cell (row 2, column 1), and false negative rate in the top right cell (row 1, col 2).
+
+```{r, echo=FALSE}
+pred_probs <- predict(dietHabitsModel, type = "response")
+
+pred_class <- ifelse(pred_probs > 0.5, 1, 0)
+
+pred_class <- factor(pred_class, levels = c(0, 1))
+actual <- factor(depression_data$depression, levels = c(0, 1))
+
+confMat <- confusionMatrix(pred_class, actual, positive = "1")
+
+accuracy <- confMat$overall[1]
+
+kable(confMat$table/(dim(depression_data)[1]), digits = 3)
+```
+
+Here we see our model has an accuracy of 0.61 or 61%, a false positive rate of 0.265 or 26.5%, and a false negative rate of 0.125 or 12.5%. This means our model with just Dietary Habits as a predictor is slightly better at predicting the presence of depression than a random guess.
+
+Despite the fact that this model cannot predict the presence of depression with an impressive accuracy, the results of our model fit and surrounding hypothesis tests lead us to fail to reject our hypothesis that students with moderate to healthy dietary habits will have lower rates of depression than students with unhealthy dietary habits.
 
 ## Interpretation
 
