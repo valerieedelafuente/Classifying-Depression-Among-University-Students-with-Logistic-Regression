@@ -381,6 +381,12 @@ kable(model_coef, digits = 3, caption="GLM Coefficient Estimates")
 
 Based on the p-value of 0.948 corresponding to the `sleep_log` variable, at significance level $\alpha=0.05$, we fail to reject the null hypothesis that the log odds is a linear function of the `sleep_duration` predictor variable, thus the (3) assumption is met and we can proceed to constructing our model.
 
+We will use the `glm` function to generate the following logistic regression model for predicting the proportion of students reporting depression at the varying sleep ranges (and how that may be extrapolated to see how depression rates scale with sleep duration):
+
+$$
+\hat{DepressionProportion}=0.72583-0.15739SleepDuration
+$$
+
 ### Hypothesis 3: Students with higher collective reported stressors will have higher rates of depression than students with lower collective reported stressors.
 
 Our final hypothesis we want to test is that students with multiple combined stressors will have a higher overall rate of depression than students without these stressors. We will fit a logistic regression model to predict the binary outcome variable, `depression`, using the numeric variable `total_stress` (combination of `academic_pressure` + `work_pressure` + `financial_stress`) as a predictor.
@@ -432,7 +438,7 @@ ggplot(depression_data, aes(x = total_stress, y = logit)) +
 
 There appears to be a strong linear relationship between the log-odds of `depression` by `total_stress`, so we can conclude that our data meets the necessary assumption and move on to fitting our model.
 
-## Results
+## Results and Interpretation
 
 ### Hypothesis 1: Students with moderate to healthy dietary habits have lower rates of depression compared to students with unhealthy dietary habits.
 
@@ -446,18 +452,18 @@ logModelSum <- summary(dietHabitsModel)
 kable(logModelSum$coefficients, format = 'markdown', digits = 42)
 ```
 
-We see statistically significant results from our basic logistic regression model with just dietary habits as a predictor. Every level of dietary habits has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by about 18.5%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 24 and 88 percent respectively. This is a very strong result to start with, but we should check our model results in other ways as well.
+We see statistically significant results from our basic logistic regression model with just dietary habits as a predictor. Every level of dietary habits has statistically significant effects on the presence of depression. Our model predicts that "healthy" dietary habits decrease the probability of depression by about 18.5%, while "moderate" and "unhealthy" dietary habits increase the probability of depression by about 24% and 88% respectively. This is a very strong result to start with, but we should check our model results in other ways as well.
 
-We will first check to make sure the Dietary Habits categorical predictor is significant in predicting the presence of depression overall rather than just by the level of the variable. We will use the "anova" function to perform a Chi-Squared likelihood ratio test with a null hypothesis that the null model without Dietary Habits is sufficient in predicting depression, and an alternative hypothesis that Dietary Habits is significant to the model in terms of lowering the model's residual deviance. The results of the anova are the following:
+We will first check to make sure the `dietary_habits` categorical predictor is significant in predicting the presence of depression overall rather than just by the level of the variable. We will use the `anova()` function to perform a chi-squared likelihood ratio test with a null hypothesis that the null model without `dietary_habits` is sufficient in predicting depression, and an alternative hypothesis that `dietary_habits` is significant to the model in terms of lowering the model's residual deviance. The results of the ANOVA are the following:
 
 ```{r, echo=FALSE}
 logModANOVA <- anova(dietHabitsModel)
 kable(logModANOVA, digits = 1000)
 ```
 
-This table shows us that when added to the null model, the Dietary Habits predictor reduced the model's residual deviance so greatly that the p-value for our likelihood ratio test is too small for R to display it. The true p-value is less than 2.2 \* 10\^-16, which is extremely tiny and reasonably rounded to 0. With this similarly significant result to the model results earlier, we can conclude that the Dietary Habits predictor as a whole is significant in predicting the presence of depression.
+This table shows us that when added to the null model, the `dietary_habits` predictor reduced the model's residual deviance so greatly that the p-value for our likelihood ratio test is too small for R to display it. The true p-value is less than 2.2 \* 10\^-16, which is extremely tiny and reasonably rounded to 0. With this similarly significant result to the model results earlier, we can conclude that the Dietary Habits predictor as a whole is significant in predicting the presence of depression.
 
-We can now check how accurate our model is at predicting the presence of depression using a Confusion Matrix. The Confusion Matrix will visualize the accuracy of our model in terms of true positive and negative rates in the diagonal cells, false positive rate in the bottom left cell (row 2, column 1), and false negative rate in the top right cell (row 1, col 2).
+We can now check how accurate our model is at predicting the presence of depression using a confusion matrix. The confusion matrix will visualize the accuracy of our model in terms of true positive and negative rates in the diagonal cells, false positive rate in the bottom left cell (row 2, column 1), and false negative rate in the top right cell (row 1, col 2).
 
 ```{r, echo=FALSE}
 pred_probs <- predict(dietHabitsModel, type = "response")
@@ -474,17 +480,11 @@ accuracy <- confMat$overall[1]
 kable(confMat$table/(dim(depression_data)[1]), digits = 3)
 ```
 
-Here we see our model has an accuracy of 0.61 or 61%, a false positive rate of 0.265 or 26.5%, and a false negative rate of 0.125 or 12.5%. This means our model with just Dietary Habits as a predictor is slightly better at predicting the presence of depression than a random guess.
+Here we see our model has an accuracy of 61%, a false positive rate of 26.5%, and a false negative rate of 12.5%. This means our model with just `dietary_habits` as a predictor is slightly better at predicting the presence of depression than a random guess.
 
 Despite the fact that this model cannot predict the presence of depression with an impressive accuracy, the results of our model fit and surrounding hypothesis tests lead us to fail to reject our hypothesis that students with moderate to healthy dietary habits will have lower rates of depression than students with unhealthy dietary habits.
 
 ### Hypothesis 2: Students who average more sleep per night will have lower rates of depression compared to students who average less.
-
--   **Results**: We use the `glm` function to generate the following logistic regression model for predicting the proportion of students reporting depression at the varying sleep ranges (and how that may be extrapolated to see how depression rates scale with sleep duration):
-
-$$
-\hat{DepressionProportion}=0.72583-0.15739SleepDuration
-$$
 
 ```{r}
 model <- glm(Depression ~ `Sleep Duration`, data = depression, family = binomial)
@@ -509,9 +509,9 @@ ggplot(depression, aes(x = `Sleep Duration`, y = predicted_prob)) +
   )
 ```
 
--   **Interpretation**: The model has an intercept coefficient of 0.72583, representing the average depression rate for students falling under the `0` Sleep Range (irrelevant as `1` is the reference group; representing less than 5 hours of sleep), and a `Sleep Duration` coefficient of -0.15739, representing the average change in depression probability when going from one sleep range to the next (in order). The p-values for both coefficients are \<0.05, indicating statistical significance of the model.
+The model has an intercept coefficient of 0.72583, representing the average depression rate for students falling under the `0` Sleep Range (irrelevant as `1` is the reference group; representing less than 5 hours of sleep), and a `sleep_duration` coefficient of -0.15739, representing the average change in depression probability when going from one sleep range to the next (in order). The p-values for both coefficients are \<0.05, indicating statistical significance of the model.
 
--   **Analyzing Performance: ROC curve and AUC**: To analyze the performance of the model we will investigate the ROC curve and area under the curve generated by the model:
+To analyze the performance of the model we will investigate the ROC curve and area under the curve generated by the model:
 
 ```{r,out.width='45%',fig.align='center'}
 library(pROC)
@@ -521,11 +521,11 @@ roc_obj <- roc(depression$Depression, predicted_probs)
 plot(roc_obj, main = "ROC Curve", col = "blue")
 ```
 
-The ROC curve generated by the model is slightly above the diagonal (increasing and concave down), but not by much. Additionally, the AUC generated from the graph is 0.5494. This means that the prediction made by the model is relatively random, skewing slightly towards being a good model (correctly predicting the depression proportion based on Sleep Duration).
+The ROC curve generated by the model is slightly above the diagonal (increasing and concave down), but not by much. Additionally, the AUC generated from the graph is 0.5494. This means that the prediction made by the model is relatively random, skewing slightly towards being a good model (correctly predicting the depression proportion based on `sleep_duration`).
 
 ### Hypothesis 3: Students with higher collective reported stressors will have higher rates of depression than students with lower collective reported stressors.
 
-We will fit a logistic regression model that will predict the odds of having depression by each level of Total Stressor. The results of the model are summarized in the following table:
+We fit a logistic regression model that will predict the odds of having depression by each level of `total_stress`. The results of the model are summarized in the following table:
 
 ```{r, echo=FALSE}
 
@@ -547,9 +547,9 @@ logit_df <- data.frame(
 kable(logit_df, caption = "Logistic Regression: Predicting Depression from Total Stress")
 ```
 
-We see statistically significant results from our basic logistic regression model using Total Stressors as a predictor. Our model predicts that for every one point increase in the presence of Total Stressors will double the likelihood of depression. This is a very strong result to start with, but we should check our model results in other ways as well.
+We see statistically significant results from our basic logistic regression model using `total_stress` as a predictor. Our model predicts that for every one point increase in the presence of `total_stress` will double the likelihood of depression. This is a very strong result to start with, but we should check our model results in other ways as well.
 
-We will first check to make sure the Total Stressors numeric predictor is significant in predicting the presence of depression overall. We will use the "anova" function to perform a Chi-Squared likelihood ratio test with a null hypothesis that the null model without Total Stressors is sufficient in predicting depression, and an alternative hypothesis that Total Stressors is significant to the model in terms of lowering the model's residual deviance. The results of the anova are the following:
+We will first check to make sure the `total_stress` numeric predictor is significant in predicting the presence of depression overall. We will use the `anova()` to perform a chi-squared likelihood ratio test with a null hypothesis that the null model without `total_stress` is sufficient in predicting depression, and an alternative hypothesis that `total_stress` is significant to the model in terms of lowering the model's residual deviance. The results of the ANOVA are the following:
 
 ```{r, echo=FALSE}
 # Fit null and full models
@@ -578,9 +578,9 @@ knitr::kable(
 )
 ```
 
-This table shows us that when added to the null model, the Total Stressors predictor reduced the model's residual deviance so greatly that the p-value for our likelihood ratio test is too small for R to display it. The true p-value is less than 2.2e-16, which is extremely tiny and reasonably rounded to 0. With this similarly significant result to the model results earlier, we can conclude that the Total Stressors predictor as a whole is significant in predicting the presence of depression. Thus we reject the null hypothesis that the simpler model without Total Stressors is sufficient in predicting depression. The extremely low p-value indicates that the model including Total Stressors provides a significantly better fit to the data. Thus, we conclude that Total Stressors is a significant predictor of depression.
+This table shows us that when added to the null model, the `total_stress` predictor reduced the model's residual deviance so greatly that the p-value for our likelihood ratio test is too small for R to display it. The true p-value is less than 2.2e-16, which is extremely tiny and reasonably rounded to 0. With this similarly significant result to the model results earlier, we can conclude that the `total_stress` predictor as a whole is significant in predicting the presence of depression. Thus we reject the null hypothesis that the simpler model without `total_stress` is sufficient in predicting depression. The extremely low p-value indicates that the model including `total_stress` provides a significantly better fit to the data. Thus, we conclude that `total_stress` is a significant predictor of depression.
 
-Lastly we will check how accurate our model is at predicting the presence of depression using a Confusion Matrix. The Confusion Matrix will visualize the accuracy of our model in terms of true positive and negative rates in the diagonal cells, false positive rate in the bottom left cell (row 2, column 1), and false negative rate in the top right cell (row 1, col 2).
+Lastly we will check how accurate our model is at predicting the presence of depression using a confusion matrix. The confusion matrix will visualize the accuracy of our model in terms of true positive and negative rates in the diagonal cells, false positive rate in the bottom left cell (row 2, column 1), and false negative rate in the top right cell (row 1, col 2).
 
 ```{r, echo=FALSE}
 # Predict probabilities
@@ -626,11 +626,9 @@ kable(metrics, caption = "Model Performance Metrics from Confusion Matrix",
       col.names = c("Metric", "Value"))
 ```
 
-Here we see our model has an accuracy of 0.7565 or 75.65%. This means our model with Total Stressors as a predictor is significantly better at predicting the presence of depression than a random guess.
+Here we see our model has an accuracy of 75.65%. This means our model with `total_stress` as a predictor is significantly better at predicting the presence of depression than a random guess.
 
-Seeing that This model can predict the presence of depression with an impressive accuracy, the results of our model fit and surrounding hypothesis tests lead us to reject the null hypothesis that the simpler model without Total Stressors is sufficient in predicting depression. Thus concluding that the Total Stressors is a significant predictor of depression.
-
-## Interpretation
+Seeing that this model can predict the presence of depression with an impressive accuracy, the results of our model fit and surrounding hypothesis tests lead us to reject the null hypothesis that the simpler model without `total_stress` is sufficient in predicting depression. Thus concluding that the `total_stress` is a significant predictor of depression.
 
 ## Conclusion and Recommendations
 
