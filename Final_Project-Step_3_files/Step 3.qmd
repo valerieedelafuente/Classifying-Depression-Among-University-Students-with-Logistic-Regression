@@ -49,6 +49,22 @@ bfcolor <- function(x, color) {
 
 ## Introduction
 
+For this project, the Student Depression Dataset by Israel Campero Jurado was used for analysis. This data set was published to OpenML on March 12, 2025 and was retrieved on April 22, 2025. [Link](https://www.openml.org/search?type=data&status=active&id=46753&sort=runs)
+
+This data contains anonymized information that is useful for studying depression levels among students. This data set contains features such as the students’ information (age and gender), their academic performance (grades, and attendance), their lifestyles (sleep patterns, exercise, and social activities), mental health history, and how they would rate their depression on a standardized scale. The raw data file is in the CSV format. The data in this data are structured, where each row represents an individual student and the columns represent a specific variable. 
+
+Previously, those who studied this data set tended to be psychology researchers, data science, and educators. Their aims were to identify factors that contribute to student depression and to design early intervention strategies. This research is also interested in looking at student depression and potential contributing factors. Hence, for this project, we’re interested in answering the following questions:
+
+1. Do certain dietary habits coincide with an increased rate of depression among students?
+2. Is there a correlation between the amount of sleep a student gets and the proportion of them that are depressed?
+3. Does the presence (and magnitude) of certain stressors have an impact on the rate at which students are depressed?
+
+We propose the following hypothesis:
+
+1. Students with moderate to healthy dietary habits will have lower rates of depression compared to students with unhealthy dietary habits.
+2. Students who average more sleep per night will have lower rates of depression compared to students who average less.
+3. Students with the highest collective reported stressors (Academic Pressure, Work Pressure and Financial Stress) will have higher rates of depression compared to students with lower collective reported stressors.
+
 ## Data Processing
 
 ```{r}
