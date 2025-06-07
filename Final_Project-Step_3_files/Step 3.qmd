@@ -720,8 +720,6 @@ Despite the fact that this model cannot predict the presence of depression with 
 
 ## Interpretation
 
-## Visualization and Communication
-
 ## Conclusion and Recommendations
 
 
