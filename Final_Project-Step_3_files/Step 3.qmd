@@ -20,7 +20,8 @@ knitr::opts_chunk$set(
   echo = FALSE,
   warning = FALSE,
   message = FALSE,
-  error = FALSE
+  error = FALSE,
+  fig.align = 'center'
 )
 
 bfcolor <- function(x, color) {
@@ -43,28 +44,6 @@ bfcolor <- function(x, color) {
 -   William Nelson (williamnelson)
 -   Hayden Galletta (haydengalletta)
 ::::
-
-## Abstract
-
-## Introduction
-
-For this project, the Student Depression Dataset by Israel Campero Jurado was used for analysis. This data set was published to OpenML on March 12, 2025 and was retrieved on April 22, 2025. [Link](https://www.openml.org/search?type=data&status=active&id=46753&sort=runs)
-
-This data contains anonymized information that is useful for studying depression levels among students. This data set contains features such as the students’ information (age and gender), their academic performance (grades, and attendance), their lifestyles (sleep patterns, exercise, and social activities), mental health history, and how they would rate their depression on a standardized scale. The raw data file is in the CSV format. The data in this data are structured, where each row represents an individual student and the columns represent a specific variable. 
-
-Previously, those who studied this data set tended to be psychology researchers, data science, and educators. Their aims were to identify factors that contribute to student depression and to design early intervention strategies. This research is also interested in looking at student depression and potential contributing factors. Hence, for this project, we’re interested in answering the following questions:
-
-1. Do certain dietary habits coincide with an increased rate of depression among students?
-2. Is there a correlation between the amount of sleep a student gets and the proportion of them that are depressed?
-3. Does the presence (and magnitude) of certain stressors have an impact on the rate at which students are depressed?
-
-We propose the following hypothesis:
-
-1. Students with moderate to healthy dietary habits will have lower rates of depression compared to students with unhealthy dietary habits.
-2. Students who average more sleep per night will have lower rates of depression compared to students who average less.
-3. Students with the highest collective reported stressors (Academic Pressure, Work Pressure and Financial Stress) will have higher rates of depression compared to students with lower collective reported stressors.
-
-## Data Processing
 
 ```{r}
 #| label: setup
@@ -187,9 +166,14 @@ depression_data <- depression_data %>%
   ))
 
 # Factorizing the `sleep_duration` variable
-depression_data <- depression_data %>% filter(sleep_duration != "Other")
-depression_data$sleep_duration <- as.numeric(factor(
-  depression_data$sleep_duration, levels = c("Less than 5 hours", "5-6 hours", "7-8 hours", "More than 8 hours")))
+depression_data <- depression_data %>%
+  mutate(sleep_duration = factor(sleep_duration, 
+                                 levels = c("Less than 5 hours", 
+                                            "5-6 hours", 
+                                            "7-8 hours", 
+                                            "More than 8 hours", 
+                                            "Other"),
+                                 ordered = TRUE))
 
 # Fixing the `dietary_habits` variable to change misspelling
 depression_data <- depression_data %>% 
@@ -262,6 +246,90 @@ depression$`Sleep Duration` <- as.numeric(factor(
                                           "'More than 8 hours'")))
 ```
 
+## Abstract
+
+## Introduction
+
+For this project, the Student Depression Dataset by Israel Campero Jurado was used for analysis. This data set was published to OpenML on March 12, 2025 and was retrieved on April 22, 2025. [Link](https://www.openml.org/search?type=data&status=active&id=46753&sort=runs)
+
+This data contains anonymized information that is useful for studying depression levels among students. This data set contains features such as the students’ information (age and gender), their academic performance (grades, and attendance), their lifestyles (sleep patterns, exercise, and social activities), mental health history, and how they would rate their depression on a standardized scale. The raw data file is in the CSV format. The data in this data are structured, where each row represents an individual student and the columns represent a specific variable. 
+
+Previously, those who studied this data set tended to be psychology researchers, data science, and educators. Their aims were to identify factors that contribute to student depression and to design early intervention strategies. This research is also interested in looking at student depression and potential contributing factors. Hence, for this project, we’re interested in answering the following questions:
+
+1. Do certain dietary habits coincide with an increased rate of depression among students?
+2. Is there a correlation between the amount of sleep a student gets and the proportion of them that are depressed?
+3. Does the presence (and magnitude) of certain stressors have an impact on the rate at which students are depressed?
+
+We propose the following hypotheses:
+
+1. Students with moderate to healthy dietary habits will have lower rates of depression compared to students with unhealthy dietary habits.
+2. Students who average more sleep per night will have lower rates of depression compared to students who average less.
+3. Students with the highest collective reported stressors (academic pressure, work pressure and financial stress) will have higher rates of depression compared to students with lower collective reported stressors.
+
+## Exploratory Data Analysis
+
+This first graph is a bar plot that helps us visualize hypothesis 1 by visualizing the correlation between a healthy diet and depression. Notably, around 45% of students with healthy dietary habits have depression, around 55% of students with moderate dietary habits have depression, and 75% of students with unhealthy dietary habits have depression. The results of this bar plot indicate that depression rates increase and student dietary habits worsen.
+
+```{r}
+# For dietary habits
+ggplot(depression_data, aes(x = dietary_habits, fill = factor(depression))) +
+  geom_bar(position = "fill", color = "black") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Depression Distribution by Dietary Habit",
+       x = "Dietary Habit", y = "Proportion",
+       fill = "Depression") +
+  theme_bw(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+The second graph is a bar plot that helps to answer hypothesis 2 by visualizing the correlation between sleep patterns and depression. The results of this bar plot seem to indicate that people getting less than 5 hours of sleep have a significantly higher rate of depression and people who get more than 8 hours of sleep have a significantly lower rate of depression. This indicates that lower rates of depression are linked to a greater daily sleep duration.
+
+```{r}
+# Convert 'depression' factor to numeric: "No" = 0, "Yes" = 1
+depression_data <- depression_data %>%
+  mutate(depression_numeric = as.numeric(depression) - 1)
+
+# Create summarized depression rates and standard errors by sleep duration
+sleep_summary <- depression_data %>%
+  group_by(sleep_duration) %>%
+  summarise(
+    mean_dep = mean(depression_numeric, na.rm = TRUE),
+    se = sd(depression_numeric, na.rm = TRUE) / sqrt(n())
+  )
+
+# Bar plot with error bars
+ggplot(sleep_summary, aes(x = sleep_duration, y = mean_dep, fill = sleep_duration)) +
+  geom_col(show.legend = FALSE) +
+
+  labs(
+    title = "Depression Rate by Sleep Duration",
+    x = "Sleep Duration",
+    y = "Mean Depression Rate"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+This final graph is a boxplot that helps visualize hypothesis 3 and shows the correlation between multiple stressor factors and depression. The results seem to indicate a correlation with the increased stress levels and depression.
+
+```{r}
+depression_data$financial_stress <- as.numeric(depression_data$financial_stress)
+depression_data$total_stress <- depression_data$academic_pressure +
+                                 depression_data$work_pressure +
+                                 depression_data$financial_stress
+
+ggplot(depression_data, aes(x = factor(depression), y = total_stress, fill = factor(depression))) +
+  geom_boxplot() +
+  labs(
+    title = "Total Reported Stress vs Depression",
+    x = "Depression (0 = No, 1 = Yes)",
+    y = "Total Stress"
+  ) +
+  scale_fill_discrete(name = "Depression") +
+  theme_minimal()
+```
+
+## Data Processing
 
 There are 27901 observations and 18 variables in this dataset. The column names in the original dataset were changed to the following: `id`, `gender`, `age`, `city`, `profession`, `academic_pressure`, `work_pressure`, `cum_gpa`, `study_satisfaction`, `job_satisfaction`, `sleep_duration`, `dietary_habits`, `degree`, `suicidal_thoughts`, `work_study_hours`, `financial_stress`, `fam_mental_illness`, and `depression`.
 
@@ -285,13 +353,13 @@ The following variables were mutated:
 
 -   `depression`: variable type was converted to a factor.
 
-There were 3 missing observations present in the dataset, coming from the `financial_stress` variable. This accounts for less than 0.1% of the dataset, so we can easily remove them. With the data processed and tidied, we can move onto modeling.
+There are 3 missing observations present in the dataset, coming from the `financial_stress` variable. This accounts for less than 0.1% of the dataset, so we can easily remove them. With the data processed and tidied, we can move onto modeling.
 
 ## Modeling Process
 
 With 3 hypotheses to test, the modeling process will be outlined and broken into 3 parts.
 
-### Hypothesis 1: Students with moderate to healthy dietary habits have lower rates of depression compared to students with unhealthy dietary habits.
+### Hypothesis 1: Students with moderate to healthy dietary habits will have lower rates of depression compared to students with unhealthy dietary habits.
 
 Our first hypothesis we want to test is that students with moderate to healthy dietary habits will have lower rates of depression than students with unhealthy dietary habits. We will fit a basic logistic regression model to predict the binary outcome variable, `depression`, using our categorical variable `dietary_habits` as a predictor.
 
@@ -348,7 +416,7 @@ Based on the hypothesis and the characteristics of the data set, our analytical 
 
 **Assumptions Required for Logistic Regression**: In order to use logistic regression to investigate our hypothesis, there are a few assumptions of the data that must be met in order for the model to be valid. That is (1), the outcome variable is binary (condition is met), (2), that the observations are independent of one another (condition is assumed based on how data was collected), (3), that the log-odds of the outcome is a linear function of the predictor variable, (4), that there is no multicollinearity (not of concern; only one variable involved in model), and (5), that there at least 10 events per predictor level (condition is met). In our case the only assumption that needs to be checked is the linearity of the log-odds.
 
-```{r,out.width='45%',fig.align='center'}
+```{r, fig.align='center'}
 bin_summary <- depression %>%
   group_by(`Sleep Duration`) %>%
   summarize(
@@ -387,7 +455,7 @@ $$
 \hat{DepressionProportion}=0.72583-0.15739SleepDuration
 $$
 
-### Hypothesis 3: Students with higher collective reported stressors will have higher rates of depression than students with lower collective reported stressors.
+### Hypothesis 3: Students with the highest collective reported stressors (academic pressure, work pressure and financial stress) will have higher rates of depression compared to students with lower collective reported stressors.
 
 Our final hypothesis we want to test is that students with multiple combined stressors will have a higher overall rate of depression than students without these stressors. We will fit a logistic regression model to predict the binary outcome variable, `depression`, using the numeric variable `total_stress` (combination of `academic_pressure` + `work_pressure` + `financial_stress`) as a predictor.
 
@@ -440,7 +508,7 @@ There appears to be a strong linear relationship between the log-odds of `depres
 
 ## Results and Interpretation
 
-### Hypothesis 1: Students with moderate to healthy dietary habits have lower rates of depression compared to students with unhealthy dietary habits.
+### Hypothesis 1: Students with moderate to healthy dietary habits will have lower rates of depression compared to students with unhealthy dietary habits.
 
 We fit a logistic regression model with the logit link function that will predict the odds of having depression by each level of `dietary_habits`. The results of the model are summarized in the following table:
 
@@ -494,7 +562,7 @@ tidy_model <- tidy_model %>%
 kable(tidy_model,digits=3,caption="Logistic Model Table")
 ```
 
-```{r,out.width='45%',fig.align='center'}
+```{r, fig.align='center'}
 
 depression$predicted_prob <- predict(model, type = "response")
 ggplot(depression, aes(x = `Sleep Duration`, y = predicted_prob)) +
@@ -513,7 +581,7 @@ The model has an intercept coefficient of 0.72583, representing the average depr
 
 To analyze the performance of the model we will investigate the ROC curve and area under the curve generated by the model:
 
-```{r,out.width='45%',fig.align='center'}
+```{r, fig.align='center'}
 library(pROC)
 predicted_probs <- predict(model, type = "response")
 roc_obj <- roc(depression$Depression, predicted_probs)
@@ -523,7 +591,7 @@ plot(roc_obj, main = "ROC Curve", col = "blue")
 
 The ROC curve generated by the model is slightly above the diagonal (increasing and concave down), but not by much. Additionally, the AUC generated from the graph is 0.5494. This means that the prediction made by the model is relatively random, skewing slightly towards being a good model (correctly predicting the depression proportion based on `sleep_duration`).
 
-### Hypothesis 3: Students with higher collective reported stressors will have higher rates of depression than students with lower collective reported stressors.
+### Hypothesis 3: Students with the highest collective reported stressors (academic pressure, work pressure and financial stress) will have higher rates of depression compared to students with lower collective reported stressors.
 
 We fit a logistic regression model that will predict the odds of having depression by each level of `total_stress`. The results of the model are summarized in the following table:
 
