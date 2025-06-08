@@ -675,7 +675,7 @@ Here we see our model has an accuracy of 0.7565 or 75.65%. This means our model 
 
 Seeing that This model can predict the presence of depression with an impressive accuracy, the results of our model fit and surrounding hypothesis tests lead us to reject the null hypothesis that the simpler model without Total Stressors is sufficient in predicting depression. Thus concluding that the Total Stressors is a significant predictor of depression.
 
-## Results
+## Results and Interpretation
 
 ### Hypothesis 1
 We will fit a logistic regression model with the logit link function that will predict the odds of having depression by each level of Dietary Habits. The results of the model are summarized in the following table:
