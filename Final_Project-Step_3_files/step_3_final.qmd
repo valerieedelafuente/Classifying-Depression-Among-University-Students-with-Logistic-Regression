@@ -1,7 +1,6 @@
 ---
 title: "Classifying Depression Among University Students with Logistic Regression"
 subtitle: "PSTAT 100: Data Science Concepts and Analysis"
-date: "2025-06-09"
 format: 
   pdf: 
     latex-engine: xelatex
@@ -21,7 +20,8 @@ knitr::opts_chunk$set(
   echo = FALSE,
   warning = FALSE,
   message = FALSE,
-  error = FALSE
+  error = FALSE,
+  fig.align = 'center'
 )
 
 bfcolor <- function(x, color) {
@@ -45,33 +45,6 @@ bfcolor <- function(x, color) {
 -   Hayden Galletta (haydengalletta)
 ::::
 
-## Abstract
-
-<<<<<<< HEAD
-In this study, we analyzed a dataset on student depression from India using a range of statistical tests and logistic regression. The analysis was guided by three hypotheses, each involving different variables–six in total, with three of them combined into a single composite variable–to determine whether these factors are significant predictors of student depression. The results indicate that dietary habits, average hours of sleep, and general life stressors (including academic, work-related, and financial stress) all contribute significantly to the likelihood of a student experiencing depression.
-
-=======
->>>>>>> parent of 3bdfffd (changs)
-## Introduction
-
-For this project, the Student Depression Dataset by Israel Campero Jurado was used for analysis. This data set was published to OpenML on March 12, 2025 and was retrieved on April 22, 2025. [Link](https://www.openml.org/search?type=data&status=active&id=46753&sort=runs)
-
-This data contains anonymized information that is useful for studying depression levels among students. This data set contains features such as the students’ information (age and gender), their academic performance (grades, and attendance), their lifestyles (sleep patterns, exercise, and social activities), mental health history, and how they would rate their depression on a standardized scale. The raw data file is in the CSV format. The data in this data are structured, where each row represents an individual student and the columns represent a specific variable. 
-
-Previously, those who studied this data set tended to be psychology researchers, data science, and educators. Their aims were to identify factors that contribute to student depression and to design early intervention strategies. This research is also interested in looking at student depression and potential contributing factors. Hence, for this project, we’re interested in answering the following questions:
-
-1. Do certain dietary habits coincide with an increased rate of depression among students?
-2. Is there a correlation between the amount of sleep a student gets and the proportion of them that are depressed?
-3. Does the presence (and magnitude) of certain stressors have an impact on the rate at which students are depressed?
-
-We propose the following hypothesis:
-
-1. Students with moderate to healthy dietary habits will have lower rates of depression compared to students with unhealthy dietary habits.
-2. Students who average more sleep per night will have lower rates of depression compared to students who average less.
-3. Students with the highest collective reported stressors (Academic Pressure, Work Pressure and Financial Stress) will have higher rates of depression compared to students with lower collective reported stressors.
-
-## Data Processing
-
 ```{r}
 #| label: setup
 #| include: false
@@ -92,6 +65,7 @@ library(knitr)
 library(rmarkdown)
 library(car)
 library(caret)
+
 #setwd("/Documents/PSTAT 100/finalproject/PSTAT-100-Project/")
 
 # Load in the data
@@ -154,7 +128,7 @@ depression_data <- depression_data %>%
     TRUE ~ city  # Leave valid entries as they are
   ))
 
-# # Fixing the `profession` variable to change invalid entries
+# Fixing the `profession` variable to change invalid entries
 depression_data <- depression_data %>%
   mutate(profession = case_when(
     profession == "'Civil Engineer'" ~ "Civil Engineer",
@@ -185,9 +159,14 @@ depression_data <- depression_data %>%
   ))
 
 # Factorizing the `sleep_duration` variable
-depression_data <- depression_data %>% filter(sleep_duration != "Other")
-depression_data$sleep_duration <- as.numeric(factor(
-  depression_data$sleep_duration, levels = c("Less than 5 hours", "5-6 hours", "7-8 hours", "More than 8 hours")))
+depression_data <- depression_data %>%
+  mutate(sleep_duration = factor(sleep_duration, 
+                                 levels = c("Less than 5 hours", 
+                                            "5-6 hours", 
+                                            "7-8 hours", 
+                                            "More than 8 hours", 
+                                            "Other"),
+                                 ordered = TRUE))
 
 # Fixing the `dietary_habits` variable to change misspelling
 depression_data <- depression_data %>% 
@@ -242,45 +221,46 @@ depression_data <- depression_data %>%
 depression_data$depression <- factor(depression_data$depression)
 ```
 
-The column names in the original dataset were changed to the following: `id`, `gender`, `age`, `city`, `profession`, `academic_pressure`, `work_pressure`, `cum_gpa`, `study_satisfaction`, `job_satisfaction`, `sleep_duration`, `dietary_habits`, `degree`, `suicidal_thoughts`, `work_study_hours`, `financial_stress`, `fam_mental_illness`, and `depression`.
+```{r}
+library(readr)
+library(knitr)
+library(dplyr)
+library(tidyr)
+library(kableExtra)
+library(ggplot2)
+library(broom)
 
-The following variables were mutated:
+depression <- read_csv("student_depression_dataset.csv")
 
--   `financial_stress`: variable type was converted to numeric and invalid entries were properly handled.
+depression <- depression %>% filter(`Sleep Duration` != "Others")
 
--   `gender`: variable type was converted to a factor.
+depression$`Sleep Duration` <- as.numeric(factor(
+  depression$`Sleep Duration`, levels = c("'Less than 5 hours'", "'5-6 hours'", "'7-8 hours'",
+                                          "'More than 8 hours'")))
+```
 
-<<<<<<< HEAD
-=======
+## Abstract
 
-There are 27901 observations and 18 variables in this dataset. The column names in the original dataset were changed to the following: `id`, `gender`, `age`, `city`, `profession`, `academic_pressure`, `work_pressure`, `cum_gpa`, `study_satisfaction`, `job_satisfaction`, `sleep_duration`, `dietary_habits`, `degree`, `suicidal_thoughts`, `work_study_hours`, `financial_stress`, `fam_mental_illness`, and `depression`.
+In this study, we analyzed a dataset on student depression from India using a range of statistical tests and logistic regression. The analysis was guided by three hypotheses, each involving different variables–six in total, with three of them combined into a single composite variable–to determine whether these factors are significant predictors of student depression. The results indicate that dietary habits, average hours of sleep, and general life stressors (including academic, work-related, and financial stress) all contribute significantly to the likelihood of a student experiencing depression.
 
-The following variables were mutated:
+## Introduction
 
--   `financial_stress`: variable type was converted to numeric and invalid entries were properly handled.
+For this project, the Student Depression Dataset by Israel Campero Jurado was used for analysis. This data set was published to OpenML on March 12, 2025 and was retrieved on April 22, 2025. [Link](https://www.openml.org/search?type=data&status=active&id=46753&sort=runs)
 
--   `gender`: variable type was converted to a factor.
+This data contains anonymized information that is useful for studying depression levels among students. This data set contains features such as the students’ information (age and gender), their academic performance (grades, and attendance), their lifestyles (sleep patterns, exercise, and social activities), mental health history, and how they would rate their depression on a standardized scale. The raw data file is in the CSV format. The data in this data are structured, where each row represents an individual student and the columns represent a specific variable.
 
->>>>>>> parent of 3bdfffd (changs)
--   `city`: typos and invalid entries properly handled.
+Previously, those who studied this data set tended to be psychology researchers, data science, and educators. Their aims were to identify factors that contribute to student depression and to design early intervention strategies. This research is also interested in looking at student depression and potential contributing factors. Hence, for this project, we’re interested in answering the following questions:
 
--   `profession`: invalid entries were properly handled.
+1.  Do certain dietary habits coincide with an increased rate of depression among students?
+2.  Is there a correlation between the amount of sleep a student gets and the proportion of them that are depressed?
+3.  Does the presence (and magnitude) of certain stressors have an impact on the rate at which students are depressed?
 
-<<<<<<< HEAD
--   `sleep_duration`: invalid entries were properly handled.
-=======
--   `sleep_duration`: invalid entries were properly handled and observations in the "Other" category were removed.
->>>>>>> parent of 3bdfffd (changs)
+We propose the following hypotheses:
 
--   `dietary_habits`: typos were properly handled.
+1.  Students with moderate to healthy dietary habits will have lower rates of depression compared to students with unhealthy dietary habits.
+2.  Students who average more sleep per night will have lower rates of depression compared to students who average less.
+3.  Students with the highest collective reported stressors (academic pressure, work pressure and financial stress) will have higher rates of depression compared to students with lower collective reported stressors.
 
--   `suicidal_thoughts`: variable type was converted to a factor.
-
--   `fam_mental_illness`: variable type was converted to a factor.
-
--   `depression`: variable type was converted to a factor.
-
-<<<<<<< HEAD
 ## Exploratory Data Analysis
 
 This first graph is a bar plot that helps us visualize hypothesis 1 by visualizing the correlation between a healthy diet and depression. Notably, around 45% of students with healthy dietary habits have depression, around 55% of students with moderate dietary habits have depression, and 75% of students with unhealthy dietary habits have depression. The results of this bar plot indicate that depression rates increase and student dietary habits worsen.
@@ -344,17 +324,39 @@ ggplot(depression_data, aes(x = factor(depression), y = total_stress, fill = fac
   theme_minimal()
 ```
 
-## Modeling Process
+## Data Processing
 
-=======
-There were 3 missing observations present in the dataset, coming from the `financial_stress` variable. This accounts for less than 0.1% of the dataset, so we can easily remove them. With the data processed and tidied, we can move onto modeling.
+There are 27901 observations and 18 variables in this dataset. The column names in the original dataset were changed to the following: `id`, `gender`, `age`, `city`, `profession`, `academic_pressure`, `work_pressure`, `cum_gpa`, `study_satisfaction`, `job_satisfaction`, `sleep_duration`, `dietary_habits`, `degree`, `suicidal_thoughts`, `work_study_hours`, `financial_stress`, `fam_mental_illness`, and `depression`.
+
+The following variables were mutated:
+
+-   `financial_stress`: variable type was converted to numeric and invalid entries were properly handled.
+
+-   `gender`: variable type was converted to a factor.
+
+-   `city`: typos and invalid entries properly handled.
+
+-   `profession`: invalid entries were properly handled.
+
+-   `sleep_duration`: invalid entries were properly handled and observations in the "Other" category were removed.
+
+-   `dietary_habits`: typos were properly handled.
+
+-   `suicidal_thoughts`: variable type was converted to a factor.
+
+-   `fam_mental_illness`: variable type was converted to a factor.
+
+-   `depression`: variable type was converted to a factor.
+
+There are 3 missing observations present in the dataset, coming from the `financial_stress` variable. This accounts for less than 0.1% of the dataset, so we can easily remove them. With the data processed and tidied, we can move onto modeling.
+
+There were no outliers or influential points in the dataset.
 
 ## Modeling Process
 
 With 3 hypotheses to test, the modeling process will be outlined and broken into 3 parts.
 
->>>>>>> parent of 3bdfffd (changs)
-### Hypothesis 1: Students with moderate to healthy dietary habits have lower rates of depression compared to students with unhealthy dietary habits.
+### Hypothesis 1: Students with moderate to healthy dietary habits will have lower rates of depression compared to students with unhealthy dietary habits.
 
 Our first hypothesis we want to test is that students with moderate to healthy dietary habits will have lower rates of depression than students with unhealthy dietary habits. We will fit a basic logistic regression model to predict the binary outcome variable, `depression`, using our categorical variable `dietary_habits` as a predictor.
 
@@ -405,67 +407,13 @@ ggplot(logOddsDF, aes(x = dietary_habits, y = logOdds)) +
 
 There appears to be a strong linear relationship between the log-odds of depression by each level of `dietary_habits`, so we can conclude that our data meets the necessary assumption and move on to fitting our model.
 
-### Hypothesis 2
+### Hypothesis 2: Students who average more sleep per night will have lower rates of depression compared to students who average less.
 
--   **Research Question**: Is there a correlation between the amount of sleep a student gets and the proportion of them that are depressed?
+Based on the hypothesis and the characteristics of the dataset, our analytical approach of choice for investigation is classification; where we will construct a logistic regression model in an attempt to predict whether or not a student reports experiencing depression based on how many hours of sleep they average per night. This is the best method of choice because our outcome variable, whether or not the student is depressed, is a binary value and our predictor, the amount of sleep averaged per night, is categorical with an ordinal nature. Additionally, the method quantifies associations and predicts probabilities, and can be extended to control for other factors.
 
--   **Hypothesis**: Students who average more sleep per night will have lower rates of depression compared to students who average less.
+**Assumptions Required for Logistic Regression**: In order to use logistic regression to investigate our hypothesis, there are a few assumptions of the data that must be met in order for the model to be valid. That is (1), the outcome variable is binary (condition is met), (2), that the observations are independent of one another (condition is assumed based on how data was collected), (3), that the log-odds of the outcome is a linear function of the predictor variable, (4), that there is no multicollinearity (not of concern; only one variable involved in model), and (5), that there at least 10 events per predictor level (condition is met). In our case the only assumption that needs to be checked is the linearity of the log-odds.
 
-<<<<<<< HEAD
-#### 1.1 Data Analysis
-
-Based on the research question, hypothesis, and the characteristics of the data set, our analytical approach of choice for investigation is Classification; where we will construct a logistic regression model in an attempt to predict whether or not a student reports experiencing depression based on how many hours of sleep they average per night. This is the best method of choice because our outcome variable, whether or not the student is depressed, is a binary value and our predictor, the amount of sleep averaged per night, is categorical with an ordinal nature. Additionally, the method quantifies associations and predicts probabilities, and can be extended to control for other factors.
-
-#### Data Processing
-
--   **Data Cleaning**: In order to properly clean our data to test this hypothesis we must check to see if there are any missing values for both the outcome variable (`Depression`) and our chosen predictor variable (`Sleep Duration`):
-
-```{r,results='asis'}
-#| echo: false
-library(readr)
-library(knitr)
-library(dplyr)
-library(tidyr)
-library(kableExtra)
-library(ggplot2)
-library(broom)
-depression <- read_csv("student_depression_dataset.csv")
-missing_table <- depression %>% 
-  select(Depression,`Sleep Duration`) %>%
-  summarise(across(everything(), ~sum(is.na(.)))) %>%
-  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Missing_Count")
-kable(missing_table,caption="NA Values")
-```
-
--   After aggregating the missing values data for both the `Depression` and `Sleep Duration` variables, we found that there are no `NA` values assigned to any observations for the respective variables. However this does not mean that there are no missing values present in the data. In order to investigate further we need to look at a frequency table of both variables:
-
-```{r,results='asis'}
-#| echo: false
-#| layout-ncol: 2
-sleeptable <- as.data.frame(table(depression$`Sleep Duration`))
-colnames(sleeptable) <- c("Variable","Frequency")
-depressiontable <- as.data.frame(table(depression$Depression))
-colnames(depressiontable) <- c("Variable","Frequency")
-
-kable(sleeptable,caption="Sleep Frequency")
-kable(depressiontable,caption="Depression Frequency")
-```
-
--   As evident by the frequency tables, there are no missing values for the `Depression` variable in the data set, however there are 18 instances of `Others` being listed as values for the `Sleep Duration` variable, so we will treat those as instances with missing values and remove them from our data set.
-
-```{r}
-depression <- depression %>% filter(`Sleep Duration` != "Others")
-```
-
--   **Assumptions Required for Logistic Regression**: In order to use logistic regression to investigate our hypothesis, there are a few assumptions of the data that must be met in order for the model to be valid. That is (1), the outcome variable is binary (condition is met), (2), that the observations are independent of one another (condition is assumed based on how data was collected), (3), that the log-odds of the outcome is a linear function of the predictor variable, (4), that there is no multicollinearity (not of concern; only one variable involved in model), and (5), that there at least 10 events per predictor level (condition is met). In our case the only assumption that needs to be checked is the linearity of the log-odds.
-
-```{r,out.width='45%',fig.align='center'}
-depression$`Sleep Duration` <- as.numeric(factor(
-  depression$`Sleep Duration`, levels = c("'Less than 5 hours'", "'5-6 hours'", "'7-8 hours'",
-                                          "'More than 8 hours'")))
-=======
-```{r,out.width='45%',fig.align='center'}
->>>>>>> parent of 3bdfffd (changs)
+```{r, fig.align='center'}
 bin_summary <- depression %>%
   group_by(`Sleep Duration`) %>%
   summarize(
@@ -490,68 +438,25 @@ model_coef <- as.data.frame(summary(model_bt)$coefficients)
 model_coef <- model_coef %>% select(-c(Estimate,`Std. Error`))
 ```
 
-The Graph of Log-Odds vs. Sleep Duration shows us a somewhat clear linear relationship between Sleep Duration and the Log-Odds. To investigate further, we will use a Box-Tidwell Test and look at the p-value corresponding to `sleep_log` (the log of the `Sleep Duration` variable)
+The graph of log-odds vs. sleep duration shows us a somewhat clear linear relationship between sleep duration and the log-odds. To investigate further, we will use a Box-Tidwell Test and look at the p-value corresponding to `sleep_log` (the log of the `sleep_duration` variable)
 
 ```{r}
 kable(model_coef, digits = 3, caption="GLM Coefficient Estimates")
 ```
 
-Based on the p-value of 0.948 corresponding to the `sleep_log` variable, at significance level $\alpha=0.05$, we fail to reject the null hypothesis that the log odds is a linear function of the `Sleep Duration` predictor variable, thus the (3) assumption is met and we can proceed to constructing our model.
+Based on the p-value of 0.948 corresponding to the `sleep_log` variable, at significance level $\alpha=0.05$, we fail to reject the null hypothesis that the log odds is a linear function of the `sleep_duration` predictor variable, thus the (3) assumption is met and we can proceed to constructing our model.
 
-#### 2.1 The Model
-
--   **Results**: We use the `glm` function to generate the following logistic regression model for predicting the proportion of students reporting depression at the varying sleep ranges (and how that may be extrapolated to see how depression rates scale with sleep duration):
+We will use the `glm` function to generate the following logistic regression model for predicting the proportion of students reporting depression at the varying sleep ranges (and how that may be extrapolated to see how depression rates scale with sleep duration):
 
 $$
 \hat{DepressionProportion}=0.72583-0.15739SleepDuration
 $$
 
-<<<<<<< HEAD
-```{r}
-model <- glm(Depression ~ `Sleep Duration`, data = depression, family = binomial)
-tidy_model <- tidy(model)
-tidy_model <- tidy_model %>%
-  mutate(p.value = formatC(p.value, format = "e", digits = 2))
-kable(tidy_model,digits=3,caption="Logistic Model Table")
-```
-=======
-### Hypothesis 3: Students with higher collective reported stressors will have higher rates of depression than students with lower collective reported stressors.
->>>>>>> parent of 3bdfffd (changs)
+### Hypothesis 3: Students with the highest collective reported stressors (academic pressure, work pressure and financial stress) will have higher rates of depression compared to students with lower collective reported stressors.
 
-```{r,out.width='45%',fig.align='center'}
+Our final hypothesis we want to test is that students with multiple combined stressors will have a higher overall rate of depression than students without these stressors. We will fit a logistic regression model to predict the binary outcome variable, `depression`, using the numeric variable `total_stress` (combination of `academic_pressure` + `work_pressure` + `financial_stress`) as a predictor.
 
-depression$predicted_prob <- predict(model, type = "response")
-ggplot(depression, aes(x = `Sleep Duration`, y = predicted_prob)) +
-  stat_summary(fun = mean, geom = "point", color = "blue", size = 3) +
-  stat_summary(fun = mean, geom = "line", group = 1, color = "blue") +
-  labs(title = "Predicted Probability of Depression vs. Sleep Duration",
-       y = "Predicted Probability", x = "Sleep Duration") +
-  theme_minimal() +
-  scale_x_continuous(
-    breaks = c(1, 2, 3, 4),
-    labels = c("<5 hrs", "5-6 hrs", "7-8 hrs", ">8 hrs")
-  )
-```
-
--   **Interpretation**: The model has an intercept coefficient of 0.72583, representing the average depression rate for students falling under the `0` Sleep Range (irrelevant as `1` is the reference group; representing less than 5 hours of sleep), and a `Sleep Duration` coefficient of -0.15739, representing the average change in depression probability when going from one sleep range to the next (in order). The p-values for both coefficients are \<0.05, indicating statistical significance of the model.
-
--   **Analyzing Performance: ROC curve and AUC**: To analyze the performance of the model we will investigate the ROC curve and area under the curve generated by the model:
-
-```{r,out.width='45%',fig.align='center'}
-library(pROC)
-predicted_probs <- predict(model, type = "response")
-roc_obj <- roc(depression$Depression, predicted_probs)
-
-plot(roc_obj, main = "ROC Curve", col = "blue")
-```
-
-The ROC curve generated by the model is slightly above the diagonal (increasing and concave down), but not by much. Additionally, the AUC generated from the graph is 0.5494. This means that the prediction made by the model is relatively random, skewing slightly towards being a good model (correctly predicting the depression proportion based on Sleep Duration).
-
-### Hypothesis 3: Hayden
-
-Our final hypothesis we want to test is that students with multiple combined stressors will have a higher overall rate of depression than students without these stressors. We will fit a logistic regression model to predict the binary outcome variable, “depression”, using the numeric variable Total Stressors (combination of Academic Pressure + Work Pressure + Financial Stress) as a predictor.
-
-Before fitting our model, we should first fully understand the predictor we are working with aswell as check some assumptions that need to be met for our model to function properly. Our predictor “Total Stressor” is distributed as follows:
+Before fitting our model, we should first fully understand the predictor we are working with as well as check some assumptions that need to be met for our model to function properly. Our predictor `total_stress` is distributed as follows:
 
 ```{r, echo=FALSE}
 
@@ -569,11 +474,9 @@ ggplot(depression_data, aes(x = total_stress)) +
   theme_minimal()
 ```
 
-.
+Looking at our data we can tell that it has a bell curve distribution and overall has a good representation of many different `total_stress` values. As a result the data does not need any cleaning and is ready to be used in our logistic regression model.
 
-Looking at our data we can tell that it has a bell curve distribution and overall has a good representation of many different Total Stressor values. As a result the data does not need any cleaning and is ready to be used in our logistic regression model.
-
-As mentioned in the previous hypothesis, Logistic Regression models have a few assumptions that we assume to have already met. The only one that we need to verify is the one that says the predictor variable should be linear in the log-odds of the outcome variable. We can check this by plotting the log-odds against the different amounts of Total Stressors:
+As mentioned in the previous hypothesis, logistic regression models have a few assumptions that we assume to have already met. The only one that we need to verify is the one that says the predictor variable should be linear in the log-odds of the outcome variable. We can check this by plotting the log-odds against the different amounts of `total_stress`:
 
 ```{r, echo=FALSE, message=FALSE}
 
@@ -599,14 +502,11 @@ ggplot(depression_data, aes(x = total_stress, y = logit)) +
 
 ```
 
-There appears to be a strong linear relationship between the log-odds of depression by Total Stressors, so we can conclude that our data meets the necessary assumption and move on to fitting our model.
+There appears to be a strong linear relationship between the log-odds of `depression` by `total_stress`, so we can conclude that our data meets the necessary assumption and move on to fitting our model.
 
-<<<<<<< HEAD
-We will fit a logistic regression model that will predict the odds of having depression by each level of Total Stressor. The results of the model are summarized in the following table:
-=======
 ## Results and Interpretation
 
-### Hypothesis 1: Students with moderate to healthy dietary habits have lower rates of depression compared to students with unhealthy dietary habits.
+### Hypothesis 1: Students with moderate to healthy dietary habits will have lower rates of depression compared to students with unhealthy dietary habits.
 
 We fit a logistic regression model with the logit link function that will predict the odds of having depression by each level of `dietary_habits`. The results of the model are summarized in the following table:
 
@@ -627,7 +527,7 @@ logModANOVA <- anova(dietHabitsModel)
 kable(logModANOVA, digits = 1000)
 ```
 
-This table shows us that when added to the null model, the `dietary_habits` predictor reduced the model's residual deviance so greatly that the p-value for our likelihood ratio test is too small for R to display it. The true p-value is less than 2.2 \* 10\^-16, which is extremely tiny and reasonably rounded to 0. With this similarly significant result to the model results earlier, we can conclude that the Dietary Habits predictor as a whole is significant in predicting the presence of depression.
+This table shows us that when added to the null model, the `dietary_habits` predictor reduced the model's residual deviance so greatly that the p-value for our likelihood ratio test is too small for R to display it. The true p-value is less than 2.2e-16, which is extremely tiny and reasonably rounded to 0. With this similarly significant result to the model results earlier, we can conclude that the `dietary_habits` predictor as a whole is significant in predicting the presence of depression.
 
 We can now check how accurate our model is at predicting the presence of depression using a confusion matrix. The confusion matrix will visualize the accuracy of our model in terms of true positive and negative rates in the diagonal cells, false positive rate in the bottom left cell (row 2, column 1), and false negative rate in the top right cell (row 1, col 2).
 
@@ -660,7 +560,7 @@ tidy_model <- tidy_model %>%
 kable(tidy_model,digits=3,caption="Logistic Model Table")
 ```
 
-```{r,out.width='45%',fig.align='center'}
+```{r, fig.align='center'}
 
 depression$predicted_prob <- predict(model, type = "response")
 ggplot(depression, aes(x = `Sleep Duration`, y = predicted_prob)) +
@@ -675,11 +575,11 @@ ggplot(depression, aes(x = `Sleep Duration`, y = predicted_prob)) +
   )
 ```
 
-The model has an intercept coefficient of 0.72583, representing the average depression rate for students falling under the `0` Sleep Range (irrelevant as `1` is the reference group; representing less than 5 hours of sleep), and a `sleep_duration` coefficient of -0.15739, representing the average change in depression probability when going from one sleep range to the next (in order). The p-values for both coefficients are \<0.05, indicating statistical significance of the model.
+The model has an intercept coefficient of 0.72583, representing the average depression rate for students falling under the `0` sleep range (irrelevant as `1` is the reference group; representing less than 5 hours of sleep), and a `sleep_duration` coefficient of -0.15739, representing the average change in depression probability when going from one sleep range to the next (in order). The p-values for both coefficients are \<0.05, indicating statistical significance of the model.
 
 To analyze the performance of the model we will investigate the ROC curve and area under the curve generated by the model:
 
-```{r,out.width='45%',fig.align='center'}
+```{r, fig.align='center'}
 library(pROC)
 predicted_probs <- predict(model, type = "response")
 roc_obj <- roc(depression$Depression, predicted_probs)
@@ -689,10 +589,9 @@ plot(roc_obj, main = "ROC Curve", col = "blue")
 
 The ROC curve generated by the model is slightly above the diagonal (increasing and concave down), but not by much. Additionally, the AUC generated from the graph is 0.5494. This means that the prediction made by the model is relatively random, skewing slightly towards being a good model (correctly predicting the depression proportion based on `sleep_duration`).
 
-### Hypothesis 3: Students with higher collective reported stressors will have higher rates of depression than students with lower collective reported stressors.
+### Hypothesis 3: Students with the highest collective reported stressors (academic pressure, work pressure and financial stress) will have higher rates of depression compared to students with lower collective reported stressors.
 
 We fit a logistic regression model that will predict the odds of having depression by each level of `total_stress`. The results of the model are summarized in the following table:
->>>>>>> parent of 3bdfffd (changs)
 
 ```{r, echo=FALSE}
 
@@ -714,9 +613,9 @@ logit_df <- data.frame(
 kable(logit_df, caption = "Logistic Regression: Predicting Depression from Total Stress")
 ```
 
-We see statistically significant results from our basic logistic regression model using Total Stressors as a predictor. Our model predicts that for every one point increase in the presence of Total Stressors will double the likelihood of depression. This is a very strong result to start with, but we should check our model results in other ways as well.
+We see statistically significant results from our basic logistic regression model using `total_stress` as a predictor. Our model predicts that for every one point increase in the presence of `total_stress` will double the likelihood of depression. This is a very strong result to start with, but we should check our model results in other ways as well.
 
-We will first check to make sure the Total Stressors numeric predictor is significant in predicting the presence of depression overall. We will use the "anova" function to perform a Chi-Squared likelihood ratio test with a null hypothesis that the null model without Total Stressors is sufficient in predicting depression, and an alternative hypothesis that Total Stressors is significant to the model in terms of lowering the model's residual deviance. The results of the anova are the following:
+We will first check to make sure the `total_stress` numeric predictor is significant in predicting the presence of depression overall. We will use the `anova()` to perform a chi-squared likelihood ratio test with a null hypothesis that the null model without `total_stress` is sufficient in predicting depression, and an alternative hypothesis that `total_stress` is significant to the model in terms of lowering the model's residual deviance. The results of the ANOVA are the following:
 
 ```{r, echo=FALSE}
 # Fit null and full models
@@ -745,9 +644,9 @@ knitr::kable(
 )
 ```
 
-This table shows us that when added to the null model, the Total Stressors predictor reduced the model's residual deviance so greatly that the p-value for our likelihood ratio test is too small for R to display it. The true p-value is less than 2.2e-16, which is extremely tiny and reasonably rounded to 0. With this similarly significant result to the model results earlier, we can conclude that the Total Stressors predictor as a whole is significant in predicting the presence of depression. Thus we reject the null hypothesis that the simpler model without Total Stressors is sufficient in predicting depression. The extremely low p-value indicates that the model including Total Stressors provides a significantly better fit to the data. Thus, we conclude that Total Stressors is a significant predictor of depression.
+This table shows us that when added to the null model, the `total_stress` predictor reduced the model's residual deviance so greatly that the p-value for our likelihood ratio test is too small for R to display it. The true p-value is less than 2.2e-16, which is extremely tiny and reasonably rounded to 0. With this similarly significant result to the model results earlier, we can conclude that the `total_stress` predictor as a whole is significant in predicting the presence of depression. Thus we reject the null hypothesis that the simpler model without `total_stress` is sufficient in predicting depression. The extremely low p-value indicates that the model including `total_stress` provides a significantly better fit to the data. Thus, we conclude that `total_stress` is a significant predictor of depression.
 
-Lastly we will check how accurate our model is at predicting the presence of depression using a Confusion Matrix. The Confusion Matrix will visualize the accuracy of our model in terms of true positive and negative rates in the diagonal cells, false positive rate in the bottom left cell (row 2, column 1), and false negative rate in the top right cell (row 1, col 2).
+Lastly we will check how accurate our model is at predicting the presence of depression using a confusion matrix. The confusion matrix will visualize the accuracy of our model in terms of true positive and negative rates in the diagonal cells, false positive rate in the bottom left cell (row 2, column 1), and false negative rate in the top right cell (row 1, col 2).
 
 ```{r, echo=FALSE}
 # Predict probabilities
@@ -793,61 +692,11 @@ kable(metrics, caption = "Model Performance Metrics from Confusion Matrix",
       col.names = c("Metric", "Value"))
 ```
 
-Here we see our model has an accuracy of 0.7565 or 75.65%. This means our model with Total Stressors as a predictor is significantly better at predicting the presence of depression than a random guess.
+Here we see our model has an accuracy of 75.65%. This means our model with `total_stress` as a predictor is significantly better at predicting the presence of depression than a random guess.
 
-Seeing that This model can predict the presence of depression with an impressive accuracy, the results of our model fit and surrounding hypothesis tests lead us to reject the null hypothesis that the simpler model without Total Stressors is sufficient in predicting depression. Thus concluding that the Total Stressors is a significant predictor of depression.
-
-## Results and Interpretation
-
-### Hypothesis 1
-We will fit a logistic regression model with the logit link function that will predict the odds of having depression by each level of Dietary Habits. The results of the model are summarized in the following table:
-
-```{r, echo=FALSE}
-dietHabitsModel <- glm(depression ~ dietary_habits - 1, data = depression_data,
-                       family = binomial(link = 'logit'))
-
-logModelSum <- summary(dietHabitsModel)
-kable(logModelSum$coefficients, format = 'markdown', digits = 42)
-```
-
-We see statistically significant results from our basic logistic regression model with just dietary habits as a predictor. Every level of dietary habits has statistically significant effects on the presence of depression. Our model predicts that Healthy dietary habits decrease the probability of depression by about 18.5%, while Moderate and Unhealthy dietary habits increase the probability of depression by about 24 and 88 percent respectively. This is a very strong result to start with, but we should check our model results in other ways as well.
-
-We will first check to make sure the Dietary Habits categorical predictor is significant in predicting the presence of depression overall rather than just by the level of the variable. We will use the "anova" function to perform a Chi-Squared likelihood ratio test with a null hypothesis that the null model without Dietary Habits is sufficient in predicting depression, and an alternative hypothesis that Dietary Habits is significant to the model in terms of lowering the model's residual deviance. The results of the anova are the following:
-
-```{r, echo=FALSE}
-logModANOVA <- anova(dietHabitsModel)
-kable(logModANOVA, digits = 1000)
-```
-
-This table shows us that when added to the null model, the Dietary Habits predictor reduced the model's residual deviance so greatly that the p-value for our likelihood ratio test is too small for R to display it. The true p-value is less than $2.2 * 10^{-16}$, which is extremely tiny and reasonably rounded to 0. With this similarly significant result to the model results earlier, we can conclude that the Dietary Habits predictor as a whole is significant in predicting the presence of depression.
-
-We can now check how accurate our model is at predicting the presence of depression using a Confusion Matrix. The Confusion Matrix will visualize the accuracy of our model in terms of true positive and negative rates in the diagonal cells, false positive rate in the bottom left cell (row 2, column 1), and false negative rate in the top right cell (row 1, col 2).
-
-```{r, echo=FALSE}
-pred_probs <- predict(dietHabitsModel, type = "response")
-
-pred_class <- ifelse(pred_probs > 0.5, 1, 0)
-
-pred_class <- factor(pred_class, levels = c(0, 1))
-actual <- factor(depression_data$depression, levels = c(0, 1))
-
-confMat <- confusionMatrix(pred_class, actual, positive = "1")
-
-accuracy <- confMat$overall[1]
-
-kable(confMat$table/(dim(depression_data)[1]), digits = 3)
-```
-
-Here we see our model has an accuracy of 0.61 or 61%, a false positive rate of 0.265 or 26.5%, and a false negative rate of 0.125 or 12.5%. This means our model with just Dietary Habits as a predictor is slightly better at predicting the presence of depression than a random guess.
-
-Despite the fact that this model cannot predict the presence of depression with an impressive accuracy, the results of our model fit and surrounding hypothesis tests lead us to fail to reject our hypothesis that students with moderate to healthy dietary habits will have lower rates of depression than students with unhealthy dietary habits.
-
-## Interpretation
+Seeing that this model can predict the presence of depression with an impressive accuracy, the results of our model fit and surrounding hypothesis tests lead us to reject the null hypothesis that the simpler model without `total_stress` is sufficient in predicting depression. Thus concluding that the `total_stress` is a significant predictor of depression.
 
 ## Conclusion and Recommendations
 
 After examining all six variables–three of which were combined–the analysis reveals that a student’s dietary habits, average hours of sleep, and general life stressors (academic, work-related, and financial) all significantly contribute to the likelihood of experiencing depression. Since all the analyzed variables are significant predictors of student depression, they can be combined additively to develop a stronger and better-fitting classification model for predicting depression in students.
 However, a major limitation of this analysis is that all participants in the study are from India. Therefore, the findings cannot be generalized to student populations worldwide. To improve the generalizability of the results, data should be gathered from students in other countries and analysis results should be compared. This approach would allow for broader insights into the underlying factors contributing to student depression and help with the development of more inclusive and effective interventions to depression for students around the globe.
-
-
-
