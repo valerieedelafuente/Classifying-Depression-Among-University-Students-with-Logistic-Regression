@@ -66,7 +66,7 @@ library(rmarkdown)
 library(car)
 library(caret)
 
-#setwd("/Documents/PSTAT 100/finalproject/PSTAT-100-Project/")
+setwd("~/Documents/PSTAT 100/my-version-final-project/data")
 
 # Load in the data
 depression_data <- read.csv("student_depression_dataset.csv")
@@ -230,6 +230,7 @@ library(kableExtra)
 library(ggplot2)
 library(broom)
 
+setwd("~/Documents/PSTAT 100/my-version-final-project/data")
 depression <- read_csv("student_depression_dataset.csv")
 
 depression <- depression %>% filter(`Sleep Duration` != "Others")
