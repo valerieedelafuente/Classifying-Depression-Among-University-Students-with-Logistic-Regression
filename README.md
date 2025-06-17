@@ -20,11 +20,11 @@ We investigated how factors like **dietary habits**, **sleep duration**, and **g
 
 ## Team Members
 
-* Valerie De La Fuente (@valeriedelafuente)
-* Matthew Arteaga (@matthewarteaga)
+* Valerie De La Fuente (@valerieedelafuente)
+* Matthew Arteaga (@Matart930)
 * Phuc Lu (@pdlu)
-* William Nelson (@williamnelson)
-* Hayden Galletta (@haydengalletta)
+* William Nelson (@WilliamNelson007)
+* Hayden Galletta (@HaydenDuh)
 
 ## Research Questions
 
