@@ -4,7 +4,7 @@
 
 This repository is a fork of a group project I took part in for the **PSTAT 100: Data Science Concepts and Analysis** course at UC Santa Barbara. The main goal is to use **logistic regression** to identify and evaluate key predictors of depression among university students using a dataset obtained from OpenML.
 
-We investigated how factors like **dietary habits**, **sleep duration**, and **general life stressors** (academic, work-related, financial) influence the likelihood of depression. The analysis is driven by hypothesis testing and supported by robust statistical modeling.
+We investigated how factors like **dietary habits**, **sleep duration**, and **general life stressors** (academic, work-related, financial) influence the likelihood of depression. The analysis is driven by hypothesis testing and supported by statistical modeling.
 
 ## Repository Structure
 
